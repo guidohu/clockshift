@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClockShift</string>
+
+    <!-- Navigation -->
+    <string name="nav_today">Today</string>
+    <string name="nav_history">History</string>
+    <string name="nav_overview">Overview</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Generic actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_add_entry">Add entry</string>
+    <string name="action_edit_day">Edit day</string>
+    <string name="action_clear_day">Clear all entries</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_switch_to_dial">Switch to dial</string>
+    <string name="cd_switch_to_keyboard">Switch to keyboard input</string>
+    <string name="cd_break_less">Shorter break</string>
+    <string name="cd_break_more">Longer break</string>
+    <string name="label_start">Start</string>
+    <string name="label_end">End</string>
+    <string name="label_break">Break length</string>
+    <string name="label_break_starts">Break starts</string>
+    <string name="stat_target">Target</string>
+    <string name="stat_worked">Worked</string>
+    <string name="stat_balance">Balance</string>
+
+    <!-- Setup wizard -->
+    <string name="setup_step_of">Step %1$d of %2$d</string>
+    <string name="setup_back">Back</string>
+    <string name="setup_next">Next</string>
+    <string name="setup_get_started">Get started</string>
+    <string name="setup_finish">Start tracking</string>
+    <string name="welcome_title">Welcome to ClockShift</string>
+    <string name="welcome_subtitle">A simple work time tracker that keeps count of your overtime.</string>
+    <string name="welcome_point_1_title">Check in and out</string>
+    <string name="welcome_point_1_text">One tap when you start, one when you finish. Add breaks as you go.</string>
+    <string name="welcome_point_2_title">Standard days</string>
+    <string name="welcome_point_2_text">Forget to log? Your usual hours are assumed, so nothing piles up.</string>
+    <string name="welcome_point_3_title">Overtime that adds up</string>
+    <string name="welcome_point_3_text">Work more and it builds up. Work less and it is deducted.</string>
+    <string name="setup_schedule_title">Your work week</string>
+    <string name="setup_schedule_subtitle">Choose your working days and usual hours. This is what counts as a full day.</string>
+    <string name="setup_start_title">Starting point</string>
+    <string name="setup_start_subtitle">From when should overtime be counted, and do you already have a balance?</string>
+    <string name="setup_start_hint">Days without a log count as standard days, so you only need to record the days that were different.</string>
+    <string name="setup_reminder_title">Evening reminder</string>
+    <string name="setup_reminder_subtitle">A gentle nudge after work, so you never have to remember to log.</string>
+    <string name="setup_reminder_hint">You can change or switch off the reminder at any time in Settings.</string>
+
+    <!-- Schedule editor -->
+    <string name="schedule_working_days">Working days</string>
+    <string name="schedule_usual_hours">Usual hours for all working days</string>
+    <string name="schedule_summary_same">%1$s per day · %2$s per week</string>
+    <string name="schedule_summary_week">%1$s per week</string>
+    <string name="schedule_invalid">End must be later than start plus the break.</string>
+    <string name="schedule_no_days">Select at least one working day.</string>
+    <string name="schedule_break">Break</string>
+    <string name="schedule_break_n">Break %1$d</string>
+    <string name="schedule_remove_break">Remove</string>
+    <string name="schedule_add_break">Add break</string>
+    <string name="schedule_customise">Customise individual days</string>
+    <string name="schedule_day_summary">%1$s – %2$s · %3$s</string>
+    <string name="schedule_not_working">Not a working day</string>
+
+    <!-- Tracking start / balance -->
+    <string name="tracking_start_label">Count overtime from</string>
+    <string name="tracking_balance_label">Starting overtime balance</string>
+    <string name="tracking_balance_none">None</string>
+    <string name="balance_dialog_title">Starting balance</string>
+    <string name="balance_dialog_hint">Overtime you already have (ahead) or time you still owe (behind).</string>
+    <string name="balance_ahead">Ahead (+)</string>
+    <string name="balance_behind">Behind (−)</string>
+    <string name="balance_hours">Hours</string>
+    <string name="balance_minutes">Minutes</string>
+
+    <!-- Reminder -->
+    <string name="reminder_switch_title">Daily reminder</string>
+    <string name="reminder_switch_summary">Ask each evening whether to log the standard day or customise it</string>
+    <string name="reminder_time_label">Remind me at</string>
+    <string name="reminder_blocked">Notifications are turned off for ClockShift, so the reminder cannot reach you.</string>
+    <string name="reminder_allow">Allow notifications</string>
+    <string name="channel_name">Daily reminder</string>
+    <string name="channel_description">Asks in the evening whether to log your standard day or customise it</string>
+    <string name="reminder_title">How was your day?</string>
+    <string name="reminder_text_log">Log your standard %1$s or customise the day.</string>
+    <string name="reminder_text_working">You’ve been checked in since %1$s. Still working?</string>
+    <string name="action_standard_day">Standard day</string>
+    <string name="action_customise">Customise</string>
+    <string name="action_check_out_now">Check out now</string>
+    <string name="confirm_logged">Logged %1$s for today</string>
+    <string name="confirm_checked_out">You’re checked out. Have a good evening!</string>
+
+    <!-- Today -->
+    <string name="today_ready">Ready to start?</string>
+    <string name="today_no_work_planned">No work planned today</string>
+    <string name="today_target_line">Target %1$s · %2$s – %3$s</string>
+    <string name="today_no_target">No target today. Anything you log counts as overtime.</string>
+    <string name="today_no_target_running">No target today, so everything counts as overtime.</string>
+    <string name="action_check_in">Check in</string>
+    <string name="action_check_in_again">Check in again</string>
+    <string name="action_check_in_anyway">Check in anyway</string>
+    <string name="action_check_out">Check out</string>
+    <string name="action_start_break">Start break</string>
+    <string name="action_end_break">End break</string>
+    <string name="action_log_standard">Log standard day</string>
+    <string name="action_add_manually">Add manually</string>
+    <string name="action_set_end_time">Set end time</string>
+    <string name="today_working_since">Working since %1$s</string>
+    <string name="today_on_break_since">On break since %1$s</string>
+    <string name="today_break_running">Break %1$s</string>
+    <string name="today_progress">%1$s of %2$s</string>
+    <string name="today_done_around">Done around %1$s</string>
+    <string name="today_left">%1$s left</string>
+    <string name="today_overtime_so_far">%1$s overtime</string>
+    <string name="today_done_title">Worked today</string>
+    <string name="today_vs_target">vs. %1$s target</string>
+    <string name="today_day_off">Day off</string>
+    <string name="today_day_off_hint">Enjoy your day. If you work anyway, you can still check in.</string>
+    <string name="today_forgot_title">Still checked in?</string>
+    <string name="today_forgot_text">You checked in on %1$s at %2$s and haven’t checked out since.</string>
+    <string name="balance_title">Overtime balance</string>
+    <string name="balance_pending">Today isn’t included yet</string>
+    <string name="entries_title">Today’s entries</string>
+    <string name="entry_break">%1$s break</string>
+    <string name="entry_no_break">No break</string>
+    <string name="entry_now">now</string>
+    <string name="entry_running">Running</string>
+    <string name="snack_undo">Undo</string>
+    <string name="snack_checked_out">Checked out · %1$s worked</string>
+    <string name="snack_logged">Logged %1$s for today</string>
+
+    <string name="fab_add_work">Add work block</string>
+    <string name="fab_add_break">Add break</string>
+    <string name="cd_add_time">Add work block or break</string>
+    <string name="cd_close_menu">Close menu</string>
+    <string name="block_sheet_work_new">Add work block</string>
+    <string name="block_sheet_work_edit">Edit work block</string>
+    <string name="block_sheet_break_new">Add break</string>
+    <string name="block_sheet_break_edit">Edit break</string>
+    <string name="block_hint_work">Replaces any break it covers and merges with work blocks it touches.</string>
+    <string name="block_hint_break">Splits the work block around it, so the time is not counted.</string>
+    <string name="block_hint_running">Still running. Set an end time to finish it.</string>
+    <string name="block_hint_next_day">Ends the next day.</string>
+    <string name="block_error_order">End must be after start.</string>
+    <string name="block_error_no_work">There is no work at that time to take a break from.</string>
+    <string name="block_error_future">A break in a running session can’t end in the future.</string>
+    <string name="snack_block_added">Work block added</string>
+    <string name="snack_break_added">Break added</string>
+    <string name="snack_entry_saved">Entry updated</string>
+    <string name="entry_kind_work">Work</string>
+    <string name="entry_kind_break">Break</string>
+
+    <!-- History -->
+    <string name="history_checked_in">Checked in</string>
+    <string name="history_since">Since %1$s</string>
+    <string name="history_day_off">Day off</string>
+    <string name="history_standard_day">Standard day</string>
+    <string name="history_assumed">Assumed · %1$s</string>
+    <string name="history_no_work">No work planned</string>
+    <string name="history_not_logged">Not logged yet</string>
+    <string name="history_footer">Tracking started on %1$s. You can change this in Settings.</string>
+
+    <!-- Overview -->
+    <string name="range_all">All time</string>
+    <string name="range_this_week">This week</string>
+    <string name="range_this_month">This month</string>
+    <string name="range_last_month">Last month</string>
+    <string name="range_this_year">This year</string>
+    <string name="range_custom">Custom</string>
+    <string name="range_picker_title">Select dates</string>
+    <string name="overview_balance_all">Overtime balance</string>
+    <string name="overview_balance_range">Overtime in this period</string>
+    <string name="overview_ahead">ahead of target</string>
+    <string name="overview_behind">behind target</string>
+    <string name="overview_on_target">right on target</string>
+    <string name="overview_includes_opening">Includes starting balance of %1$s</string>
+    <string name="overview_days">Logged %1$d · Assumed %2$d · Days off %3$d</string>
+    <string name="overview_empty">Nothing to show yet. Your first completed day will appear here.</string>
+    <string name="chart_title_day">Overtime per day</string>
+    <string name="chart_title_week">Overtime per week</string>
+    <string name="chart_title_month">Overtime per month</string>
+    <string name="chart_hint">Tap a bar for details</string>
+    <string name="chart_description">%1$s. Highest %2$s, lowest %3$s.</string>
+    <string name="breakdown_title">Breakdown</string>
+    <string name="breakdown_detail">%1$s worked · %2$s target</string>
+
+    <!-- Day editor -->
+    <string name="day_off_title">Day off</string>
+    <string name="day_off_summary">No target. Time you log counts as overtime.</string>
+    <string name="day_standard_assumed">Standard day assumed</string>
+    <string name="day_nothing_logged">Nothing logged yet</string>
+    <string name="day_standard_details">%1$s – %2$s · %3$s · %4$s</string>
+    <string name="day_breaks_none">no break</string>
+    <string name="day_breaks_one">break %1$s</string>
+    <string name="day_breaks_many">breaks %1$s</string>
+    <string name="action_use_standard">Use standard day</string>
+    <string name="action_custom_entry">Custom entry</string>
+    <string name="day_note_assumed">Nothing was logged, so a standard day is assumed. Add an entry to change that.</string>
+    <string name="day_note_off">Marked as a day off. Any time you log counts as overtime.</string>
+    <string name="day_note_pending">Counts once the day is logged or over.</string>
+    <string name="day_note_running">You’re still checked in. This day counts once you check out.</string>
+    <string name="snack_day_cleared">Entries removed</string>
+    <string name="snack_entry_deleted">Entry deleted</string>
+    <string name="snack_logged_day">Logged %1$s</string>
+
+    <!-- Settings -->
+    <string name="settings_schedule">Work schedule</string>
+    <string name="settings_schedule_hint">Changes apply from today. Earlier days keep the hours they had.</string>
+    <string name="settings_tracking">Overtime tracking</string>
+    <string name="settings_reminder">Daily reminder</string>
+    <string name="settings_about_version">%1$s %2$s</string>
+    <string name="settings_about_privacy">All data stays on this device.</string>
+</resources>
