@@ -1,4 +1,4 @@
-package com.clockshift.app.notify
+package com.github.guidohu.clockshift.notify
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -6,11 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.clockshift.app.MainActivity
-import com.clockshift.app.R
-import com.clockshift.app.data.AppState
-import com.clockshift.app.domain.formatDuration
-import com.clockshift.app.domain.timeFormatter
+import com.github.guidohu.clockshift.MainActivity
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.data.AppState
+import com.github.guidohu.clockshift.domain.formatDuration
+import com.github.guidohu.clockshift.domain.timeFormatter
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -39,8 +39,8 @@ object Notifications {
     private const val CHANNEL_ID = "daily_reminder"
     private const val NOTIFICATION_ID = 1
 
-    const val ACTION_LOG_STANDARD = "com.clockshift.app.action.LOG_STANDARD"
-    const val ACTION_CHECK_OUT = "com.clockshift.app.action.CHECK_OUT"
+    const val ACTION_LOG_STANDARD = "com.github.guidohu.clockshift.action.LOG_STANDARD"
+    const val ACTION_CHECK_OUT = "com.github.guidohu.clockshift.action.CHECK_OUT"
     const val EXTRA_DATE = "date"
 
     fun createChannel(context: Context) {

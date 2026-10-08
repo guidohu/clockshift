@@ -1,12 +1,12 @@
-package com.clockshift.app.ui.setup
+package com.github.guidohu.clockshift.ui.setup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.clockshift.app.domain.Settings
-import com.clockshift.app.domain.WeekSchedule
+import com.github.guidohu.clockshift.domain.Settings
+import com.github.guidohu.clockshift.domain.WeekSchedule
 import java.time.LocalDate
 
 enum class SetupStep { Welcome, Schedule, Start, Reminder }

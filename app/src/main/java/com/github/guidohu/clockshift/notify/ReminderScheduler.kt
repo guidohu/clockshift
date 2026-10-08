@@ -1,10 +1,10 @@
-package com.clockshift.app.notify
+package com.github.guidohu.clockshift.notify
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.clockshift.app.domain.minuteOfDayToTime
+import com.github.guidohu.clockshift.domain.minuteOfDayToTime
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -30,6 +30,6 @@ class ReminderScheduler(private val context: Context) {
 
     private companion object {
         const val REQUEST_CODE = 100
-        const val ACTION_REMIND = "com.clockshift.app.action.REMIND"
+        const val ACTION_REMIND = "com.github.guidohu.clockshift.action.REMIND"
     }
 }

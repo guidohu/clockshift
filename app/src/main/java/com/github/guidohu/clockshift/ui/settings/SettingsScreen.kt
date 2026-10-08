@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.settings
+package com.github.guidohu.clockshift.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,10 +25,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.data.AppState
-import com.clockshift.app.ui.ClockActions
-import com.clockshift.app.ui.components.rememberNotificationPermission
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.data.AppState
+import com.github.guidohu.clockshift.ui.ClockActions
+import com.github.guidohu.clockshift.ui.components.rememberNotificationPermission
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)

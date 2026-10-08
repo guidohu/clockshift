@@ -1,9 +1,9 @@
-package com.clockshift.app.ui
+package com.github.guidohu.clockshift.ui
 
-import com.clockshift.app.domain.Entry
-import com.clockshift.app.domain.EntryEdit
-import com.clockshift.app.domain.Settings
-import com.clockshift.app.domain.WeekSchedule
+import com.github.guidohu.clockshift.domain.Entry
+import com.github.guidohu.clockshift.domain.EntryEdit
+import com.github.guidohu.clockshift.domain.Settings
+import com.github.guidohu.clockshift.domain.WeekSchedule
 import java.time.LocalDate
 
 /** Everything the screens can ask the app to do. Implemented by [MainViewModel]; faked in previews. */

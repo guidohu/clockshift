@@ -1,13 +1,13 @@
-package com.clockshift.app
+package com.github.guidohu.clockshift
 
-import com.clockshift.app.domain.AddOutcome
-import com.clockshift.app.domain.Entry
-import com.clockshift.app.domain.EntryEdit
-import com.clockshift.app.domain.EntryKind
-import com.clockshift.app.domain.EntryOps
-import com.clockshift.app.domain.ScheduleBreak
-import com.clockshift.app.domain.DaySchedule
-import com.clockshift.app.domain.standardEntries
+import com.github.guidohu.clockshift.domain.AddOutcome
+import com.github.guidohu.clockshift.domain.Entry
+import com.github.guidohu.clockshift.domain.EntryEdit
+import com.github.guidohu.clockshift.domain.EntryKind
+import com.github.guidohu.clockshift.domain.EntryOps
+import com.github.guidohu.clockshift.domain.ScheduleBreak
+import com.github.guidohu.clockshift.domain.DaySchedule
+import com.github.guidohu.clockshift.domain.standardEntries
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

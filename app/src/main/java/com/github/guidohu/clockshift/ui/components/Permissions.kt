@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.components
+package com.github.guidohu.clockshift.ui.components
 
 import android.Manifest
 import android.content.Context

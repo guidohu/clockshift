@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.entries
+package com.github.guidohu.clockshift.ui.entries
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,11 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.domain.Entry
-import com.clockshift.app.domain.formatDuration
-import com.clockshift.app.ui.components.TabularNumbers
-import com.clockshift.app.ui.components.rememberTimeFormatter
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.Entry
+import com.github.guidohu.clockshift.domain.formatDuration
+import com.github.guidohu.clockshift.ui.components.TabularNumbers
+import com.github.guidohu.clockshift.ui.components.rememberTimeFormatter
 
 /**
  * The work blocks and breaks of a day in chronological order. Tap a row to edit it, swipe it to the

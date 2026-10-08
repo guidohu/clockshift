@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.setup
+package com.github.guidohu.clockshift.ui.setup
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -41,13 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.ui.ClockActions
-import com.clockshift.app.ui.components.NotificationPermission
-import com.clockshift.app.ui.components.rememberNotificationPermission
-import com.clockshift.app.ui.settings.ReminderSection
-import com.clockshift.app.ui.settings.ScheduleEditor
-import com.clockshift.app.ui.settings.TrackingFields
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.ui.ClockActions
+import com.github.guidohu.clockshift.ui.components.NotificationPermission
+import com.github.guidohu.clockshift.ui.components.rememberNotificationPermission
+import com.github.guidohu.clockshift.ui.settings.ReminderSection
+import com.github.guidohu.clockshift.ui.settings.ScheduleEditor
+import com.github.guidohu.clockshift.ui.settings.TrackingFields
 
 @Composable
 fun SetupScreen(viewModel: SetupViewModel, actions: ClockActions) {

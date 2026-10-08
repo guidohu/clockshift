@@ -1,4 +1,4 @@
-package com.clockshift.app.data
+package com.github.guidohu.clockshift.data
 
 import androidx.room.Dao
 import androidx.room.Insert

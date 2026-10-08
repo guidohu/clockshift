@@ -1,7 +1,7 @@
-package com.clockshift.app.data
+package com.github.guidohu.clockshift.data
 
 import androidx.room.withTransaction
-import com.clockshift.app.domain.Settings
+import com.github.guidohu.clockshift.domain.Settings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate

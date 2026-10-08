@@ -1,4 +1,4 @@
-package com.clockshift.app.domain
+package com.github.guidohu.clockshift.domain
 
 import java.time.LocalDate
 

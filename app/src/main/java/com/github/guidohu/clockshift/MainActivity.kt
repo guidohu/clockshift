@@ -1,4 +1,4 @@
-package com.clockshift.app
+package com.github.guidohu.clockshift
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,9 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.clockshift.app.ui.AppRoot
-import com.clockshift.app.ui.MainViewModel
-import com.clockshift.app.ui.theme.ClockShiftTheme
+import com.github.guidohu.clockshift.ui.AppRoot
+import com.github.guidohu.clockshift.ui.MainViewModel
+import com.github.guidohu.clockshift.ui.theme.ClockShiftTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels {

@@ -1,4 +1,4 @@
-package com.clockshift.app.data
+package com.github.guidohu.clockshift.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,7 +10,7 @@ data class EntryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     /** Epoch day of the start. */
     val date: Long,
-    /** Local minutes, see [com.clockshift.app.domain.toLocalMinutes]. */
+    /** Local minutes, see [com.github.guidohu.clockshift.domain.toLocalMinutes]. */
     val startAt: Long,
     val endAt: Long?,
     /** Legacy column from before breaks were separate entries; always 0 for new rows. */
@@ -19,7 +19,7 @@ data class EntryEntity(
     val breakStartedAt: Long? = null,
     /** Legacy column, no longer used. */
     val note: String = "",
-    /** [com.clockshift.app.domain.EntryKind] ordinal: 0 = work, 1 = break. */
+    /** [com.github.guidohu.clockshift.domain.EntryKind] ordinal: 0 = work, 1 = break. */
     @ColumnInfo(defaultValue = "0") val kind: Int = 0,
 )
 

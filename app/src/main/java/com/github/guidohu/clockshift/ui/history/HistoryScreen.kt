@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.history
+package com.github.guidohu.clockshift.ui.history
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -39,18 +39,18 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.data.AppState
-import com.clockshift.app.domain.DayResult
-import com.clockshift.app.domain.formatDuration
-import com.clockshift.app.domain.formatSigned
-import com.clockshift.app.ui.components.DatePickerDialogFor
-import com.clockshift.app.ui.components.DateLabels
-import com.clockshift.app.ui.components.TabularNumbers
-import com.clockshift.app.ui.components.deltaContentColor
-import com.clockshift.app.ui.components.rememberDateLabels
-import com.clockshift.app.ui.components.rememberNow
-import com.clockshift.app.ui.components.rememberTimeFormatter
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.data.AppState
+import com.github.guidohu.clockshift.domain.DayResult
+import com.github.guidohu.clockshift.domain.formatDuration
+import com.github.guidohu.clockshift.domain.formatSigned
+import com.github.guidohu.clockshift.ui.components.DatePickerDialogFor
+import com.github.guidohu.clockshift.ui.components.DateLabels
+import com.github.guidohu.clockshift.ui.components.TabularNumbers
+import com.github.guidohu.clockshift.ui.components.deltaContentColor
+import com.github.guidohu.clockshift.ui.components.rememberDateLabels
+import com.github.guidohu.clockshift.ui.components.rememberNow
+import com.github.guidohu.clockshift.ui.components.rememberTimeFormatter
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter

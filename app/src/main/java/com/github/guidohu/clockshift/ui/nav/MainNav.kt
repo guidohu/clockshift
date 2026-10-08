@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.nav
+package com.github.guidohu.clockshift.ui.nav
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -31,14 +31,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.clockshift.app.R
-import com.clockshift.app.data.AppState
-import com.clockshift.app.ui.ClockActions
-import com.clockshift.app.ui.day.DayScreen
-import com.clockshift.app.ui.history.HistoryScreen
-import com.clockshift.app.ui.overview.OverviewScreen
-import com.clockshift.app.ui.settings.SettingsScreen
-import com.clockshift.app.ui.today.TodayScreen
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.data.AppState
+import com.github.guidohu.clockshift.ui.ClockActions
+import com.github.guidohu.clockshift.ui.day.DayScreen
+import com.github.guidohu.clockshift.ui.history.HistoryScreen
+import com.github.guidohu.clockshift.ui.overview.OverviewScreen
+import com.github.guidohu.clockshift.ui.settings.SettingsScreen
+import com.github.guidohu.clockshift.ui.today.TodayScreen
 import java.time.LocalDate
 
 private object Routes {

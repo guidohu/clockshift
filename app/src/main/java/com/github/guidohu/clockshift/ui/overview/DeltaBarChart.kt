@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.overview
+package com.github.guidohu.clockshift.ui.overview
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -17,8 +17,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.domain.formatSigned
-import com.clockshift.app.ui.theme.overtime
+import com.github.guidohu.clockshift.domain.formatSigned
+import com.github.guidohu.clockshift.ui.theme.overtime
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min

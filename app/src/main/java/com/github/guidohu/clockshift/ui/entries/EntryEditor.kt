@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.entries
+package com.github.guidohu.clockshift.ui.entries
 
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
@@ -14,15 +14,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.clockshift.app.R
-import com.clockshift.app.domain.AddOutcome
-import com.clockshift.app.domain.DaySchedule
-import com.clockshift.app.domain.Entry
-import com.clockshift.app.domain.EntryEdit
-import com.clockshift.app.domain.EntryKind
-import com.clockshift.app.domain.EntryOps
-import com.clockshift.app.domain.toMinuteOfDay
-import com.clockshift.app.ui.ClockActions
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.AddOutcome
+import com.github.guidohu.clockshift.domain.DaySchedule
+import com.github.guidohu.clockshift.domain.Entry
+import com.github.guidohu.clockshift.domain.EntryEdit
+import com.github.guidohu.clockshift.domain.EntryKind
+import com.github.guidohu.clockshift.domain.EntryOps
+import com.github.guidohu.clockshift.domain.toMinuteOfDay
+import com.github.guidohu.clockshift.ui.ClockActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate

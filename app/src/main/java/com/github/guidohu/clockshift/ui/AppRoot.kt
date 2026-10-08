@@ -1,4 +1,4 @@
-package com.clockshift.app.ui
+package com.github.guidohu.clockshift.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -10,9 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.clockshift.app.ui.nav.MainNav
-import com.clockshift.app.ui.setup.SetupScreen
-import com.clockshift.app.ui.setup.SetupViewModel
+import com.github.guidohu.clockshift.ui.nav.MainNav
+import com.github.guidohu.clockshift.ui.setup.SetupScreen
+import com.github.guidohu.clockshift.ui.setup.SetupViewModel
 
 private enum class Mode { Loading, Setup, Main }
 

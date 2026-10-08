@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.components
+package com.github.guidohu.clockshift.ui.components
 
 import android.content.Context
 import android.text.format.DateUtils

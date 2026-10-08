@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.entries
+package com.github.guidohu.clockshift.ui.entries
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
+import com.github.guidohu.clockshift.R
 
 /** Speed-dial: a plus button that fans out "Add work block" and "Add break". */
 @Composable

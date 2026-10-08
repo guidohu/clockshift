@@ -1,4 +1,4 @@
-package com.clockshift.app.data
+package com.github.guidohu.clockshift.data
 
 import android.content.ContentValues
 import androidx.room.migration.Migration

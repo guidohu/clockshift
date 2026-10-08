@@ -1,11 +1,11 @@
-package com.clockshift.app
+package com.github.guidohu.clockshift
 
 import android.app.Application
-import com.clockshift.app.data.AppDatabase
-import com.clockshift.app.data.ClockRepository
-import com.clockshift.app.data.SettingsStore
-import com.clockshift.app.notify.Notifications
-import com.clockshift.app.notify.ReminderScheduler
+import com.github.guidohu.clockshift.data.AppDatabase
+import com.github.guidohu.clockshift.data.ClockRepository
+import com.github.guidohu.clockshift.data.SettingsStore
+import com.github.guidohu.clockshift.notify.Notifications
+import com.github.guidohu.clockshift.notify.ReminderScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

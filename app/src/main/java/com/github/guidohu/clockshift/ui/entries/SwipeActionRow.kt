@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.entries
+package com.github.guidohu.clockshift.ui.entries
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -32,7 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
+import com.github.guidohu.clockshift.R
 import kotlinx.coroutines.launch
 
 private val DeleteActionWidth = 88.dp

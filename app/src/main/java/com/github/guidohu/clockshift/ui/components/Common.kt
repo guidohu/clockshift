@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.components
+package com.github.guidohu.clockshift.ui.components
 
 import android.text.format.DateFormat
 import androidx.compose.foundation.layout.Arrangement
@@ -53,12 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.clockshift.app.R
-import com.clockshift.app.domain.formatDuration
-import com.clockshift.app.domain.formatSigned
-import com.clockshift.app.domain.minuteOfDayToTime
-import com.clockshift.app.domain.timeFormatter
-import com.clockshift.app.ui.theme.overtime
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.formatDuration
+import com.github.guidohu.clockshift.domain.formatSigned
+import com.github.guidohu.clockshift.domain.minuteOfDayToTime
+import com.github.guidohu.clockshift.domain.timeFormatter
+import com.github.guidohu.clockshift.ui.theme.overtime
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.LocalDate

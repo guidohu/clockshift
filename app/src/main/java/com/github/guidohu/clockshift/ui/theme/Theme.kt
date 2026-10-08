@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.theme
+package com.github.guidohu.clockshift.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

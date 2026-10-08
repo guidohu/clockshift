@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.settings
+package com.github.guidohu.clockshift.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -38,16 +38,16 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.domain.DaySchedule
-import com.clockshift.app.domain.ScheduleBreak
-import com.clockshift.app.domain.WeekSchedule
-import com.clockshift.app.domain.formatDuration
-import com.clockshift.app.domain.minuteOfDayToTime
-import com.clockshift.app.ui.components.BreakField
-import com.clockshift.app.ui.components.SectionLabel
-import com.clockshift.app.ui.components.TimeField
-import com.clockshift.app.ui.components.rememberTimeFormatter
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.DaySchedule
+import com.github.guidohu.clockshift.domain.ScheduleBreak
+import com.github.guidohu.clockshift.domain.WeekSchedule
+import com.github.guidohu.clockshift.domain.formatDuration
+import com.github.guidohu.clockshift.domain.minuteOfDayToTime
+import com.github.guidohu.clockshift.ui.components.BreakField
+import com.github.guidohu.clockshift.ui.components.SectionLabel
+import com.github.guidohu.clockshift.ui.components.TimeField
+import com.github.guidohu.clockshift.ui.components.rememberTimeFormatter
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale

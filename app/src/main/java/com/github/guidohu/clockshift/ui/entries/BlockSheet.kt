@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.entries
+package com.github.guidohu.clockshift.ui.entries
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,12 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.domain.EntryKind
-import com.clockshift.app.domain.toMinuteOfDay
-import com.clockshift.app.ui.components.ClockTimePickerDialog
-import com.clockshift.app.ui.components.TimeField
-import com.clockshift.app.ui.components.ValueField
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.EntryKind
+import com.github.guidohu.clockshift.domain.toMinuteOfDay
+import com.github.guidohu.clockshift.ui.components.ClockTimePickerDialog
+import com.github.guidohu.clockshift.ui.components.TimeField
+import com.github.guidohu.clockshift.ui.components.ValueField
 import java.time.LocalDateTime
 
 /** Why a block cannot be saved. */

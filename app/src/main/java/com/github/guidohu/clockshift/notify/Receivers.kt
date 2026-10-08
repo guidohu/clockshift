@@ -1,12 +1,12 @@
-package com.clockshift.app.notify
+package com.github.guidohu.clockshift.notify
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
-import com.clockshift.app.R
-import com.clockshift.app.container
-import com.clockshift.app.domain.formatDuration
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.container
+import com.github.guidohu.clockshift.domain.formatDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

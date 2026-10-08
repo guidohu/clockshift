@@ -1,4 +1,4 @@
-package com.clockshift.app.ui.settings
+package com.github.guidohu.clockshift.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,12 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.clockshift.app.R
-import com.clockshift.app.domain.formatSigned
-import com.clockshift.app.ui.components.DatePickerDialogFor
-import com.clockshift.app.ui.components.NotificationPermission
-import com.clockshift.app.ui.components.TimeField
-import com.clockshift.app.ui.components.ValueField
+import com.github.guidohu.clockshift.R
+import com.github.guidohu.clockshift.domain.formatSigned
+import com.github.guidohu.clockshift.ui.components.DatePickerDialogFor
+import com.github.guidohu.clockshift.ui.components.NotificationPermission
+import com.github.guidohu.clockshift.ui.components.TimeField
+import com.github.guidohu.clockshift.ui.components.ValueField
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

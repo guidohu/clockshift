@@ -1,13 +1,13 @@
-package com.clockshift.app.ui
+package com.github.guidohu.clockshift.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.clockshift.app.data.AppState
-import com.clockshift.app.data.ClockRepository
-import com.clockshift.app.domain.Entry
-import com.clockshift.app.domain.EntryEdit
-import com.clockshift.app.domain.Settings
-import com.clockshift.app.domain.WeekSchedule
+import com.github.guidohu.clockshift.data.AppState
+import com.github.guidohu.clockshift.data.ClockRepository
+import com.github.guidohu.clockshift.domain.Entry
+import com.github.guidohu.clockshift.domain.EntryEdit
+import com.github.guidohu.clockshift.domain.Settings
+import com.github.guidohu.clockshift.domain.WeekSchedule
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
