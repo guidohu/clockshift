@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Keyboard
@@ -26,6 +27,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -151,6 +154,69 @@ fun ValueField(
             )
         }
     }
+}
+
+/** A tappable tile showing a duration; tapping opens a dialog to type hours and minutes. */
+@Composable
+fun DurationField(
+    label: String,
+    minutes: Int,
+    onChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    maxMinutes: Int = 7 * 24 * 60,
+) {
+    var open by remember { mutableStateOf(false) }
+    ValueField(label = label, value = formatDuration(minutes), onClick = { open = true }, modifier = modifier, isError = isError)
+    if (open) {
+        DurationDialog(
+            title = label,
+            initialMinutes = minutes,
+            maxMinutes = maxMinutes,
+            onConfirm = {
+                onChange(it)
+                open = false
+            },
+            onDismiss = { open = false },
+        )
+    }
+}
+
+@Composable
+private fun DurationDialog(title: String, initialMinutes: Int, maxMinutes: Int, onConfirm: (Int) -> Unit, onDismiss: () -> Unit) {
+    var hours by remember { mutableStateOf((initialMinutes / 60).toString()) }
+    var minutes by remember { mutableStateOf((initialMinutes % 60).toString()) }
+    val minutePart = minutes.toIntOrNull() ?: 0
+    val total = (hours.toIntOrNull() ?: 0) * 60 + minutePart
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        confirmButton = {
+            TextButton(enabled = minutePart <= 59 && total <= maxMinutes, onClick = { onConfirm(total) }) { Text(stringResource(R.string.action_ok)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+        text = {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = hours,
+                    onValueChange = { value -> hours = value.filter(Char::isDigit).take(3) },
+                    label = { Text(stringResource(R.string.duration_hours)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+                OutlinedTextField(
+                    value = minutes,
+                    onValueChange = { value -> minutes = value.filter(Char::isDigit).take(2) },
+                    label = { Text(stringResource(R.string.duration_minutes)) },
+                    singleLine = true,
+                    isError = minutePart > 59,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        },
+    )
 }
 
 @Composable

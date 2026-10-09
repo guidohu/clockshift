@@ -34,6 +34,8 @@ data class ScheduleDayEntity(
     val working: Boolean,
     val startMinute: Int,
     val endMinute: Int,
+    /** Minutes the user is expected to work on this weekday, as entered by the user. */
+    @ColumnInfo(defaultValue = "0") val targetMinutes: Int = 0,
     /** Legacy column from before a day could have several breaks; see [ScheduleBreakEntity]. */
     val breakMinutes: Int = 0,
     /** Legacy column, see [breakMinutes]. */

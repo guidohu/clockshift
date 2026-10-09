@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -188,6 +190,17 @@ fun TodayScreen(
                         }
                     },
                     onAddManually = { editor.openAdd(EntryKind.Work) },
+                    onLogDayOff = {
+                        actions.setDayOff(today, true)
+                        scope.launch {
+                            val result = snackbar.showSnackbar(
+                                message = context.getString(R.string.snack_day_off),
+                                actionLabel = context.getString(R.string.snack_undo),
+                                withDismissAction = true,
+                            )
+                            if (result == SnackbarResult.ActionPerformed) actions.setDayOff(today, false)
+                        }
+                    },
                     onOpenDay = onOpenDay,
                 )
             }
@@ -225,6 +238,7 @@ private fun StatusCard(
     onCheckOut: () -> Unit,
     onLogStandard: () -> Unit,
     onAddManually: () -> Unit,
+    onLogDayOff: () -> Unit,
     onOpenDay: (LocalDate) -> Unit,
 ) {
     val active = state.activeEntry
@@ -262,6 +276,7 @@ private fun StatusCard(
             onCheckIn = onCheckIn,
             onLogStandard = onLogStandard,
             onAddManually = onAddManually,
+            onLogDayOff = onLogDayOff,
         )
     }
 }
@@ -270,6 +285,7 @@ private fun StatusCard(
 private fun cardColors(container: Color = MaterialTheme.colorScheme.surfaceContainerHigh): CardColors =
     CardDefaults.cardColors(containerColor = container)
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun IdleCard(
     state: AppState,
@@ -278,6 +294,7 @@ private fun IdleCard(
     onCheckIn: () -> Unit,
     onLogStandard: () -> Unit,
     onAddManually: () -> Unit,
+    onLogDayOff: () -> Unit,
 ) {
     val schedule = state.scheduleFor(today)
     val hasTarget = schedule.working && schedule.targetMinutes > 0
@@ -307,11 +324,12 @@ private fun IdleCard(
                 Spacer(Modifier.size(12.dp))
                 Text(stringResource(R.string.action_check_in), style = MaterialTheme.typography.titleMedium)
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 if (hasTarget) {
                     TextButton(onClick = onLogStandard) { Text(stringResource(R.string.action_log_standard)) }
                 }
                 TextButton(onClick = onAddManually) { Text(stringResource(R.string.action_add_manually)) }
+                TextButton(onClick = onLogDayOff) { Text(stringResource(R.string.action_log_day_off)) }
             }
         }
     }

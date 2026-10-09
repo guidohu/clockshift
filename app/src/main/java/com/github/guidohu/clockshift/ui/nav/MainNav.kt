@@ -136,6 +136,7 @@ fun MainNav(
             composable(Routes.HISTORY) {
                 HistoryScreen(
                     state = state,
+                    actions = actions,
                     onOpenDay = { date, add -> navController.navigate(Routes.day(date, add)) },
                 )
             }

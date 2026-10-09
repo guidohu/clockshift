@@ -45,7 +45,7 @@
     <string name="welcome_point_3_title">Overtime that adds up</string>
     <string name="welcome_point_3_text">Work more and it builds up. Work less and it is deducted.</string>
     <string name="setup_schedule_title">Your work week</string>
-    <string name="setup_schedule_subtitle">Choose your working days and usual hours. This is what counts as a full day.</string>
+    <string name="setup_schedule_subtitle">Choose your working days and tell us how many hours you need to work. Your usual times are only used to fill in standard days.</string>
     <string name="setup_start_title">Starting point</string>
     <string name="setup_start_subtitle">From when should overtime be counted, and do you already have a balance?</string>
     <string name="setup_start_hint">Days without a log count as standard days, so you only need to record the days that were different.</string>
@@ -55,10 +55,19 @@
 
     <!-- Schedule editor -->
     <string name="schedule_working_days">Working days</string>
-    <string name="schedule_usual_hours">Usual hours for all working days</string>
+    <string name="schedule_target_hours">Hours you need to work</string>
+    <string name="schedule_per_day">Per day</string>
+    <string name="schedule_per_week">Per week</string>
+    <string name="schedule_target_per_day">Hours per working day</string>
+    <string name="schedule_target_per_week">Hours per week</string>
+    <string name="schedule_target_hint">This is your target. Hours worked above it count as overtime, below it as minus. It does not depend on the times below.</string>
+    <string name="schedule_usual_hours">Usual times on working days</string>
+    <string name="schedule_times_invalid">End must be later than start.</string>
+    <string name="duration_hours">Hours</string>
+    <string name="duration_minutes">Minutes</string>
     <string name="schedule_summary_same">%1$s per day · %2$s per week</string>
     <string name="schedule_summary_week">%1$s per week</string>
-    <string name="schedule_invalid">End must be later than start plus the break.</string>
+    <string name="schedule_invalid">Enter how many hours you need to work.</string>
     <string name="schedule_no_days">Select at least one working day.</string>
     <string name="schedule_break">Break</string>
     <string name="schedule_break_n">Break %1$d</string>
@@ -110,6 +119,7 @@
     <string name="action_end_break">End break</string>
     <string name="action_log_standard">Log standard day</string>
     <string name="action_add_manually">Add manually</string>
+    <string name="action_log_day_off">Log day off</string>
     <string name="action_set_end_time">Set end time</string>
     <string name="today_working_since">Working since %1$s</string>
     <string name="today_on_break_since">On break since %1$s</string>
@@ -133,6 +143,8 @@
     <string name="entry_running">Running</string>
     <string name="snack_undo">Undo</string>
     <string name="snack_checked_out">Checked out · %1$s worked</string>
+    <string name="snack_day_off">Marked today as a day off</string>
+    <string name="snack_day_off_on">Marked %1$s as a day off</string>
     <string name="snack_logged">Logged %1$s for today</string>
 
     <string name="fab_add_work">Add work block</string>
@@ -159,7 +171,30 @@
     <!-- History -->
     <string name="history_checked_in">Checked in</string>
     <string name="history_since">Since %1$s</string>
+    <string name="history_selected_count">%1$d selected</string>
+    <string name="history_delete_message">Entries and day-off marks of the selected days are removed. Days in the past count as standard days again.</string>
+    <plurals name="history_delete_title">
+        <item quantity="one">Delete %1$d day?</item>
+        <item quantity="other">Delete %1$d days?</item>
+    </plurals>
+    <plurals name="snack_days_deleted">
+        <item quantity="one">Deleted %1$d day</item>
+        <item quantity="other">Deleted %1$d days</item>
+    </plurals>
+    <string name="snack_day_deleted">Deleted %1$s</string>
+    <string name="cd_cancel_selection">Cancel selection</string>
+    <string name="cd_delete_selected">Delete selected</string>
+    <string name="cd_selected">Selected</string>
     <string name="history_day_off">Day off</string>
+    <string name="history_add_standard">Standard day</string>
+    <string name="history_add_standard_hint">Your usual hours · %1$s</string>
+    <string name="history_add_day_off">Day off</string>
+    <string name="history_add_day_off_hint">No target for this day</string>
+    <string name="history_add_custom">Custom day</string>
+    <string name="history_add_custom_hint">Enter the times yourself</string>
+    <string name="history_add_unavailable_logged">Already has entries</string>
+    <string name="history_add_unavailable_no_work">No work planned</string>
+    <string name="history_add_already_off">Already a day off</string>
     <string name="history_standard_day">Standard day</string>
     <string name="history_assumed">Assumed · %1$s</string>
     <string name="history_no_work">No work planned</string>

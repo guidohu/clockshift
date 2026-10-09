@@ -104,7 +104,7 @@ class OvertimeCalculatorTest {
     @Test
     fun `schedule changes only affect days from the effective date`() {
         val shorter = WeekSchedule(
-            DayOfWeek.entries.associateWith { DaySchedule(it < DayOfWeek.SATURDAY, 9 * 60, 15 * 60, emptyList()) },
+            DayOfWeek.entries.associateWith { DaySchedule(it < DayOfWeek.SATURDAY, 9 * 60, 15 * 60, emptyList(), target = 6 * 60) },
         )
         val calc = calculator(schedules = listOf(standard, ScheduleVersion(wednesday, shorter)))
         assertEquals(8 * 60, calc.scheduleFor(tuesday).targetMinutes)

@@ -115,7 +115,7 @@ class EntryOpsTest {
 
     @Test
     fun `standard day contains the break at its configured time`() {
-        val schedule = DaySchedule(true, 9 * 60, 17 * 60 + 30, listOf(ScheduleBreak(12 * 60, 30)))
+        val schedule = DaySchedule(true, 9 * 60, 17 * 60 + 30, listOf(ScheduleBreak(12 * 60, 30)), target = 8 * 60)
         val entries = standardEntries(day, schedule)
         assertEquals(listOf(EntryKind.Work, EntryKind.Break, EntryKind.Work), entries.map { it.kind })
         assertEquals(schedule.targetMinutes, entries.filter { !it.isBreak }.sumOf { it.completedMinutes })
@@ -127,6 +127,7 @@ class EntryOpsTest {
         val schedule = DaySchedule(
             true, 8 * 60, 17 * 60,
             listOf(ScheduleBreak(15 * 60, 15), ScheduleBreak(12 * 60, 30)),
+            target = 8 * 60 + 15,
         )
         val entries = standardEntries(day, schedule)
         assertEquals(
@@ -142,6 +143,7 @@ class EntryOpsTest {
         val messy = DaySchedule(
             true, 9 * 60, 17 * 60,
             listOf(ScheduleBreak(16 * 60 + 50, 60), ScheduleBreak(12 * 60, 30), ScheduleBreak(12 * 60 + 15, 30), ScheduleBreak(13 * 60 + 15, 15)),
+            target = 8 * 60,
         ).normalized()
         // 12:00-12:30 and the overlapping one pushed to 12:30-13:00 merge; 13:15 stays; the last is clamped to the end.
         assertEquals(

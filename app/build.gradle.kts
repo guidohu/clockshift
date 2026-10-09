@@ -22,8 +22,8 @@ android {
         applicationId = "com.github.guidohu.clockshift"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.3"
     }
 
     signingConfigs {

@@ -11,21 +11,24 @@ data class ScheduleBreak(val startMinute: Int, val minutes: Int) {
 }
 
 /**
- * Working hours of a single weekday. Times are minutes since midnight. The [breaks] are not worked;
- * they lie inside the working hours, in chronological order and without overlaps (see [normalized]).
+ * A single weekday. [target] is how long the user is expected to work on it, as stated by the user;
+ * it is independent of the times, so a usual day may well end up above or below it. The times are
+ * minutes since midnight and describe the usual day (used to fill in a standard day). The [breaks]
+ * are not worked; they lie inside the working hours, in chronological order and without overlaps
+ * (see [normalized]).
  */
 data class DaySchedule(
     val working: Boolean,
     val startMinute: Int,
     val endMinute: Int,
     val breaks: List<ScheduleBreak>,
+    val target: Int,
 ) {
     /** Total break time of the day. */
     val breakMinutes: Int get() = breaks.sumOf { it.minutes }
 
     /** Minutes expected on this weekday; 0 when it is not a working day. */
-    val targetMinutes: Int
-        get() = if (working) (endMinute - startMinute - breakMinutes).coerceAtLeast(0) else 0
+    val targetMinutes: Int get() = if (working) target.coerceAtLeast(0) else 0
 
     /**
      * Sorts the breaks, keeps them inside the working hours, pushes overlapping ones back and merges
@@ -56,6 +59,19 @@ data class WeekSchedule(val days: Map<DayOfWeek, DaySchedule>) {
 
     val weeklyTargetMinutes: Int get() = days.values.sumOf { it.targetMinutes }
 
+    /**
+     * The same week with [weeklyMinutes] spread evenly over the working days. Minutes that do not
+     * divide evenly go to the first working days, one each.
+     */
+    fun withWeeklyTarget(weeklyMinutes: Int): WeekSchedule {
+        val working = DayOfWeek.entries.filter { this[it].working }
+        if (working.isEmpty()) return this
+        val base = weeklyMinutes / working.size
+        val remainder = weeklyMinutes % working.size
+        val targets = working.withIndex().associate { (index, day) -> day to base + if (index < remainder) 1 else 0 }
+        return WeekSchedule(days.mapValues { (day, schedule) -> targets[day]?.let { schedule.copy(target = it) } ?: schedule })
+    }
+
     /** Latest end of all working days, used to suggest a reminder time. */
     val latestEndMinute: Int? get() = days.values.filter { it.working }.maxOfOrNull { it.endMinute }
 
@@ -63,6 +79,7 @@ data class WeekSchedule(val days: Map<DayOfWeek, DaySchedule>) {
         const val DEFAULT_START = 9 * 60
         const val DEFAULT_END = 17 * 60 + 30
         const val DEFAULT_BREAK = 30
+        const val DEFAULT_TARGET = 8 * 60
         const val DEFAULT_BREAK_START = 12 * 60
         const val EXTRA_BREAK = 15
 
@@ -73,6 +90,7 @@ data class WeekSchedule(val days: Map<DayOfWeek, DaySchedule>) {
                     startMinute = DEFAULT_START,
                     endMinute = DEFAULT_END,
                     breaks = listOf(ScheduleBreak(DEFAULT_BREAK_START, DEFAULT_BREAK)),
+                    target = DEFAULT_TARGET,
                 )
             },
         )

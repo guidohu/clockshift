@@ -99,3 +99,18 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         )
     }
 }
+
+/**
+ * The expected hours of a day are stored instead of being derived from the times. Existing days keep
+ * what they were worth so far: the time between start and end minus the breaks.
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE schedule_day ADD COLUMN targetMinutes INTEGER NOT NULL DEFAULT 0")
+        db.execSQL(
+            "UPDATE schedule_day SET targetMinutes = MAX(0, endMinute - startMinute - COALESCE(" +
+                "(SELECT SUM(minutes) FROM schedule_break b " +
+                "WHERE b.effectiveFrom = schedule_day.effectiveFrom AND b.dayOfWeek = schedule_day.dayOfWeek), 0))",
+        )
+    }
+}

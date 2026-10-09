@@ -21,6 +21,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -45,6 +48,7 @@ import com.github.guidohu.clockshift.domain.WeekSchedule
 import com.github.guidohu.clockshift.domain.formatDuration
 import com.github.guidohu.clockshift.domain.minuteOfDayToTime
 import com.github.guidohu.clockshift.ui.components.BreakField
+import com.github.guidohu.clockshift.ui.components.DurationField
 import com.github.guidohu.clockshift.ui.components.SectionLabel
 import com.github.guidohu.clockshift.ui.components.TimeField
 import com.github.guidohu.clockshift.ui.components.rememberTimeFormatter
@@ -53,14 +57,16 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 /**
- * Edits the standard week: which days are working days, the usual hours that apply to all of them,
- * and optional per-day exceptions. Used by the setup wizard and by Settings.
+ * Edits the standard week: which days are working days, how many hours the user has to work (asked
+ * explicitly, never worked out from the times), the usual times that apply to all of them, and
+ * optional per-day exceptions. Used by the setup wizard and by Settings.
  */
 @Composable
 fun ScheduleEditor(week: WeekSchedule, onChange: (WeekSchedule) -> Unit, modifier: Modifier = Modifier) {
     val reference = week.days.values.firstOrNull { it.working } ?: week[DayOfWeek.MONDAY]
     var customiseOpen by rememberSaveable { mutableStateOf(false) }
     var expandedDay by rememberSaveable { mutableStateOf<Int?>(null) }
+    var targetPerWeek by rememberSaveable { mutableStateOf(false) }
 
     fun applyUsual(
         start: Int = reference.startMinute,
@@ -74,6 +80,16 @@ fun ScheduleEditor(week: WeekSchedule, onChange: (WeekSchedule) -> Unit, modifie
         )
     }
 
+    fun applyTarget(minutes: Int) {
+        onChange(
+            if (targetPerWeek) {
+                week.withWeeklyTarget(minutes)
+            } else {
+                WeekSchedule(week.days.mapValues { (_, d) -> d.copy(target = minutes) })
+            },
+        )
+    }
+
     fun toggleDay(day: DayOfWeek) {
         val current = week[day]
         val updated = if (current.working) {
@@ -84,9 +100,12 @@ fun ScheduleEditor(week: WeekSchedule, onChange: (WeekSchedule) -> Unit, modifie
                 startMinute = reference.startMinute,
                 endMinute = reference.endMinute,
                 breaks = reference.breaks,
+                target = reference.target,
             )
         }
-        onChange(WeekSchedule(week.days + (day to updated)))
+        val changed = WeekSchedule(week.days + (day to updated))
+        // Per week, the weekly total stays what the user entered and is shared among the working days.
+        onChange(if (targetPerWeek) changed.withWeeklyTarget(week.weeklyTargetMinutes) else changed)
     }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -97,8 +116,33 @@ fun ScheduleEditor(week: WeekSchedule, onChange: (WeekSchedule) -> Unit, modifie
             }
         }
 
+        SectionLabel(stringResource(R.string.schedule_target_hours))
+        val targetInvalid = week.days.values.any { it.working } && week.weeklyTargetMinutes <= 0
+        val targetOptions = listOf(false to R.string.schedule_per_day, true to R.string.schedule_per_week)
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+            targetOptions.forEachIndexed { index, (perWeek, label) ->
+                SegmentedButton(
+                    selected = targetPerWeek == perWeek,
+                    onClick = { targetPerWeek = perWeek },
+                    shape = SegmentedButtonDefaults.itemShape(index, targetOptions.size),
+                ) { Text(stringResource(label)) }
+            }
+        }
+        DurationField(
+            label = stringResource(if (targetPerWeek) R.string.schedule_target_per_week else R.string.schedule_target_per_day),
+            minutes = if (targetPerWeek) week.weeklyTargetMinutes else reference.target,
+            onChange = ::applyTarget,
+            modifier = Modifier.fillMaxWidth(),
+            isError = targetInvalid,
+        )
+        Text(
+            text = stringResource(R.string.schedule_target_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
         SectionLabel(stringResource(R.string.schedule_usual_hours))
-        val usualInvalid = reference.targetMinutes <= 0
+        val usualInvalid = reference.endMinute <= reference.startMinute
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             TimeField(
                 label = stringResource(R.string.label_start),
@@ -122,7 +166,14 @@ fun ScheduleEditor(week: WeekSchedule, onChange: (WeekSchedule) -> Unit, modifie
             workEnd = reference.endMinute,
             isError = usualInvalid,
         )
-        ScheduleSummary(week = week, invalid = usualInvalid)
+        if (usualInvalid) {
+            Text(
+                text = stringResource(R.string.schedule_times_invalid),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+        ScheduleSummary(week = week, invalid = targetInvalid)
 
         Row(
             Modifier
@@ -307,7 +358,14 @@ private fun DayRow(
                     Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    val invalid = schedule.targetMinutes <= 0
+                    val invalid = schedule.endMinute <= schedule.startMinute
+                    DurationField(
+                        label = stringResource(R.string.schedule_target_per_day),
+                        minutes = schedule.target,
+                        onChange = { onChange(schedule.copy(target = it)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = schedule.target <= 0,
+                    )
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         TimeField(
                             label = stringResource(R.string.label_start),

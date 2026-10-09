@@ -187,6 +187,7 @@ private fun WeekSchedule.toDayRows(from: LocalDate): List<ScheduleDayEntity> =
             working = schedule.working,
             startMinute = schedule.startMinute,
             endMinute = schedule.endMinute,
+            targetMinutes = schedule.target,
         )
     }
 
@@ -210,7 +211,7 @@ private fun toVersions(dayRows: List<ScheduleDayEntity>, breakRows: List<Schedul
                             .sortedBy { it.position }
                             .map { ScheduleBreak(it.startMinute, it.minutes) }
                         DayOfWeek.of(row.dayOfWeek) to
-                            DaySchedule(row.working, row.startMinute, row.endMinute, breaks).normalized()
+                            DaySchedule(row.working, row.startMinute, row.endMinute, breaks, row.targetMinutes).normalized()
                     },
                 ),
             )
