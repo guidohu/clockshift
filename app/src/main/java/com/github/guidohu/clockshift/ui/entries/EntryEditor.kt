@@ -1,6 +1,7 @@
 package com.github.guidohu.clockshift.ui.entries
 
 import android.content.Context
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -106,6 +107,7 @@ class EntryEditor internal constructor(
                 message = context.getString(messageRes),
                 actionLabel = context.getString(R.string.snack_undo),
                 withDismissAction = true,
+                duration = SnackbarDuration.Short,
             )
             if (result == SnackbarResult.ActionPerformed) {
                 written.forEach { actions.deleteEntry(it) }

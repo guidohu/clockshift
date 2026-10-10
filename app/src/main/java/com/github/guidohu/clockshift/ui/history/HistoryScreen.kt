@@ -31,6 +31,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TextButton
@@ -109,6 +110,7 @@ fun HistoryScreen(
                 message = message,
                 actionLabel = context.getString(R.string.snack_undo),
                 withDismissAction = true,
+                duration = SnackbarDuration.Short,
             )
             if (outcome == SnackbarResult.ActionPerformed) onUndo()
         }

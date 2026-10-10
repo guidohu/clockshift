@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Switch
@@ -106,6 +107,7 @@ fun DayScreen(
                 message = message,
                 actionLabel = context.getString(R.string.snack_undo),
                 withDismissAction = true,
+                duration = SnackbarDuration.Short,
             )
             if (outcome == SnackbarResult.ActionPerformed) onUndo()
         }
