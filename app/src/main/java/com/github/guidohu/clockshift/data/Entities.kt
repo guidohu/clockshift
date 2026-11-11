@@ -62,4 +62,18 @@ data class SettingsEntity(
     val openingBalanceMinutes: Int,
     val reminderEnabled: Boolean,
     val reminderMinute: Int,
+    /** [com.github.guidohu.clockshift.domain.AutoTrackMode] ordinal. */
+    @ColumnInfo(defaultValue = "0") val autoTrackMode: Int = 0,
+    /** Office Wi-Fi names, one per line. */
+    @ColumnInfo(defaultValue = "") val autoTrackWifi: String = "",
+    val autoTrackLatitude: Double? = null,
+    val autoTrackLongitude: Double? = null,
+    @ColumnInfo(defaultValue = "150") val autoTrackRadius: Int = 150,
+    @ColumnInfo(defaultValue = "0") val autoTrackAsk: Boolean = false,
+    @ColumnInfo(defaultValue = "1") val autoTrackWorkdaysOnly: Boolean = true,
+    @ColumnInfo(defaultValue = "10") val autoTrackLeaveDelay: Int = 10,
+    @ColumnInfo(defaultValue = "1") val checkInReminder: Boolean = true,
+    @ColumnInfo(defaultValue = "60") val checkInReminderDelay: Int = 60,
+    @ColumnInfo(defaultValue = "0") val checkOutReminder: Boolean = false,
+    @ColumnInfo(defaultValue = "15") val checkOutReminderDelay: Int = 15,
 )

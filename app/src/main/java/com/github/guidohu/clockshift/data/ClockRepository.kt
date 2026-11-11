@@ -109,6 +109,37 @@ class ClockRepository(
         active
     }
 
+    /**
+     * Checks in from [at], which may lie in the past (for example when the phone noticed the user arrive).
+     * The start never lies in the future and never overlaps a block that already ended that day. Returns
+     * the new block, or null when the user is already checked in.
+     */
+    suspend fun checkInAt(at: LocalDateTime, now: LocalDateTime): Entry? = database.withTransaction {
+        if (entryDao.findActive() != null) return@withTransaction null
+        val latestEnd = entryDao.findByDate(at.toLocalDate().toEpochDay())
+            .mapNotNull { it.endAt?.fromLocalMinutes() }
+            .maxOrNull()
+        val start = listOfNotNull(at.truncatedTo(ChronoUnit.MINUTES), latestEnd).max()
+            .coerceAtMost(now.truncatedTo(ChronoUnit.MINUTES))
+        val entry = Entry(start = start, end = null)
+        entry.copy(id = entryDao.upsert(entry.toEntity()))
+    }
+
+    /** Undoes a check-in: removes the work block [id] if it is still the one running. */
+    suspend fun undoCheckIn(id: Long): Boolean = database.withTransaction {
+        val active = entryDao.findActive()?.toDomain()
+        if (active == null || active.id != id || active.isBreak) return@withTransaction false
+        entryDao.delete(id)
+        true
+    }
+
+    /** Undoes a check-out: puts the running block [before] back, unless the user has checked in again since. */
+    suspend fun restoreSession(before: Entry): Boolean = database.withTransaction {
+        if (entryDao.findActive() != null) return@withTransaction false
+        entryDao.upsert(before.toEntity())
+        true
+    }
+
     // --- entries --------------------------------------------------------------------------
 
     suspend fun saveEntry(entry: Entry): Long = entryDao.upsert(entry.toEntity())

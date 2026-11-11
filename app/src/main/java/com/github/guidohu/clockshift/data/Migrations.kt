@@ -114,3 +114,27 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         )
     }
 }
+
+/**
+ * Automatic check-in/out (Pro) and the check-in/out reminders. The new work start reminder follows the
+ * existing evening reminder: users who switched that off are not surprised by a new notification.
+ */
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        listOf(
+            "autoTrackMode INTEGER NOT NULL DEFAULT 0",
+            "autoTrackWifi TEXT NOT NULL DEFAULT ''",
+            "autoTrackLatitude REAL",
+            "autoTrackLongitude REAL",
+            "autoTrackRadius INTEGER NOT NULL DEFAULT 150",
+            "autoTrackAsk INTEGER NOT NULL DEFAULT 0",
+            "autoTrackWorkdaysOnly INTEGER NOT NULL DEFAULT 1",
+            "autoTrackLeaveDelay INTEGER NOT NULL DEFAULT 10",
+            "checkInReminder INTEGER NOT NULL DEFAULT 1",
+            "checkInReminderDelay INTEGER NOT NULL DEFAULT 60",
+            "checkOutReminder INTEGER NOT NULL DEFAULT 0",
+            "checkOutReminderDelay INTEGER NOT NULL DEFAULT 15",
+        ).forEach { db.execSQL("ALTER TABLE settings ADD COLUMN $it") }
+        db.execSQL("UPDATE settings SET checkInReminder = reminderEnabled")
+    }
+}

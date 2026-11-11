@@ -11,25 +11,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.IosShare
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -42,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.github.guidohu.clockshift.R
 import com.github.guidohu.clockshift.data.AppState
 import com.github.guidohu.clockshift.domain.Granularity
@@ -56,24 +48,15 @@ import com.github.guidohu.clockshift.ui.components.DeltaChip
 import com.github.guidohu.clockshift.ui.components.TabularNumbers
 import com.github.guidohu.clockshift.ui.components.rememberDateLabels
 import com.github.guidohu.clockshift.ui.components.rememberNow
-import com.github.guidohu.clockshift.ui.components.toUtcDate
-import com.github.guidohu.clockshift.ui.components.toUtcMillis
+import com.github.guidohu.clockshift.ui.components.DateRangeDialog
+import com.github.guidohu.clockshift.ui.components.RangeKind
+import com.github.guidohu.clockshift.ui.components.resolveRange
+import com.github.guidohu.clockshift.ui.export.ExportSheet
 import com.github.guidohu.clockshift.ui.theme.overtime
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import java.util.Locale
-
-private enum class RangeKind(val labelRes: Int) {
-    All(R.string.range_all),
-    ThisWeek(R.string.range_this_week),
-    ThisMonth(R.string.range_this_month),
-    LastMonth(R.string.range_last_month),
-    ThisYear(R.string.range_this_year),
-    Custom(R.string.range_custom),
-}
 
 private const val MAX_LIST_ROWS = 120
 
@@ -83,7 +66,7 @@ fun OverviewScreen(state: AppState) {
     val now by rememberNow(tickMillis = 30_000L)
     val today = now.toLocalDate()
     val dateLabels = rememberDateLabels()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val firstDayOfWeek = remember { WeekFields.of(Locale.getDefault()).firstDayOfWeek }
 
     var kind by rememberSaveable { mutableStateOf(RangeKind.All) }
@@ -91,6 +74,7 @@ fun OverviewScreen(state: AppState) {
     var customTo by rememberSaveable { mutableLongStateOf(today.toEpochDay()) }
     var pickerOpen by rememberSaveable { mutableStateOf(false) }
     var selectedBar by rememberSaveable { mutableStateOf<Int?>(null) }
+    var exportOpen by rememberSaveable { mutableStateOf(false) }
 
     val range = resolveRange(kind, today, LocalDate.ofEpochDay(customFrom), LocalDate.ofEpochDay(customTo), firstDayOfWeek)
     val stats = remember(state, range, today) {
@@ -99,12 +83,22 @@ fun OverviewScreen(state: AppState) {
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { LargeTopAppBar(title = { Text(stringResource(R.string.nav_overview)) }, scrollBehavior = scrollBehavior) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.nav_overview)) },
+                actions = {
+                    IconButton(onClick = { exportOpen = true }) {
+                        Icon(Icons.Outlined.IosShare, contentDescription = stringResource(R.string.cd_export))
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = padding.calculateTopPadding() + 4.dp,
+                top = padding.calculateTopPadding() + 8.dp,
                 bottom = padding.calculateBottomPadding() + 24.dp,
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -173,6 +167,16 @@ fun OverviewScreen(state: AppState) {
         }
     }
 
+    if (exportOpen) {
+        ExportSheet(
+            state = state,
+            onDismiss = { exportOpen = false },
+            initialKind = kind,
+            initialFrom = LocalDate.ofEpochDay(customFrom),
+            initialTo = LocalDate.ofEpochDay(customTo),
+        )
+    }
+
     if (pickerOpen) {
         DateRangeDialog(
             initialFrom = LocalDate.ofEpochDay(customFrom),
@@ -187,21 +191,6 @@ fun OverviewScreen(state: AppState) {
             onDismiss = { pickerOpen = false },
         )
     }
-}
-
-private fun resolveRange(
-    kind: RangeKind,
-    today: LocalDate,
-    customFrom: LocalDate,
-    customTo: LocalDate,
-    firstDayOfWeek: DayOfWeek,
-): Pair<LocalDate?, LocalDate> = when (kind) {
-    RangeKind.All -> null to today
-    RangeKind.ThisWeek -> today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek)).let { it to it.plusDays(6) }
-    RangeKind.ThisMonth -> today.withDayOfMonth(1) to today.with(TemporalAdjusters.lastDayOfMonth())
-    RangeKind.LastMonth -> today.minusMonths(1).withDayOfMonth(1).let { it to it.with(TemporalAdjusters.lastDayOfMonth()) }
-    RangeKind.ThisYear -> today.withDayOfYear(1) to today.with(TemporalAdjusters.lastDayOfYear())
-    RangeKind.Custom -> customFrom to customTo
 }
 
 @Composable
@@ -371,51 +360,3 @@ private fun BreakdownCard(stats: RangeStats, dateLabels: DateLabels, modifier: M
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DateRangeDialog(
-    initialFrom: LocalDate,
-    initialTo: LocalDate,
-    maxDate: LocalDate,
-    onConfirm: (LocalDate, LocalDate) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val state = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = initialFrom.toUtcMillis(),
-        initialSelectedEndDateMillis = initialTo.toUtcMillis(),
-        initialDisplayMode = DisplayMode.Picker,
-        selectableDates = remember(maxDate) {
-            object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long) = utcTimeMillis <= maxDate.toUtcMillis()
-            }
-        },
-    )
-    val from = state.selectedStartDateMillis
-    val to = state.selectedEndDateMillis
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
-            Column(Modifier.fillMaxSize()) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = onDismiss) {
-                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.action_cancel))
-                    }
-                    Text(
-                        stringResource(R.string.range_picker_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(
-                        enabled = from != null && to != null,
-                        onClick = { if (from != null && to != null) onConfirm(from.toUtcDate(), to.toUtcDate()) },
-                    ) { Text(stringResource(R.string.action_save)) }
-                }
-                DateRangePicker(state = state, modifier = Modifier.weight(1f))
-            }
-        }
-    }
-}

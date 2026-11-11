@@ -135,6 +135,8 @@ data class Settings(
     val openingBalanceMinutes: Int,
     val reminderEnabled: Boolean,
     val reminderMinute: Int,
+    val autoTrack: AutoTrackSettings = AutoTrackSettings(),
+    val smartReminders: SmartReminderSettings = SmartReminderSettings(),
 ) {
     companion object {
         const val DEFAULT_REMINDER_MINUTE = 18 * 60
@@ -146,5 +148,68 @@ data class Settings(
             reminderEnabled = true,
             reminderMinute = DEFAULT_REMINDER_MINUTE,
         )
+    }
+}
+
+/** How ClockShift notices that the user is at work (Pro). */
+enum class AutoTrackMode { Off, Wifi, Location }
+
+data class GeoPoint(val latitude: Double, val longitude: Double)
+
+/**
+ * Automatic check-in and check-out (Pro). With [askFirst] the app only suggests the action in a
+ * notification; otherwise it acts and offers undo. A departure counts once the user has been away for
+ * [leaveDelayMinutes], so a dropped Wi-Fi connection or GPS jitter does not end the day.
+ */
+data class AutoTrackSettings(
+    val mode: AutoTrackMode = AutoTrackMode.Off,
+    val wifiNames: List<String> = emptyList(),
+    val workplace: GeoPoint? = null,
+    val radiusMeters: Int = DEFAULT_RADIUS,
+    val askFirst: Boolean = false,
+    val workingDaysOnly: Boolean = true,
+    val leaveDelayMinutes: Int = DEFAULT_LEAVE_DELAY,
+) {
+    /** True when the chosen mode has everything it needs to run. */
+    val isConfigured: Boolean
+        get() = when (mode) {
+            AutoTrackMode.Off -> false
+            AutoTrackMode.Wifi -> wifiNames.isNotEmpty()
+            AutoTrackMode.Location -> workplace != null
+        }
+
+    fun matchesWifi(name: String?): Boolean =
+        name != null && wifiNames.any { it.trim().equals(name.trim(), ignoreCase = true) }
+
+    companion object {
+        const val DEFAULT_RADIUS = 150
+        const val MIN_RADIUS = 100
+        const val MAX_RADIUS = 1000
+        const val DEFAULT_LEAVE_DELAY = 10
+        val LEAVE_DELAY_OPTIONS = listOf(5, 10, 15, 30)
+    }
+}
+
+/**
+ * Reminders to check in and out.
+ *
+ *  - Work start ([checkIn], free): on a working day without any entry, [checkInDelayMinutes] after the
+ *    planned start. With Pro the app uses the time the user usually starts instead, and the delay can
+ *    be changed.
+ *  - Daily hours reached ([checkOut], Pro): while checked in, [checkOutDelayMinutes] after the daily
+ *    target was reached.
+ *
+ * The work end reminder is the evening reminder ([Settings.reminderEnabled]).
+ */
+data class SmartReminderSettings(
+    val checkIn: Boolean = true,
+    val checkInDelayMinutes: Int = DEFAULT_CHECK_IN_DELAY,
+    val checkOut: Boolean = false,
+    val checkOutDelayMinutes: Int = DEFAULT_CHECK_OUT_DELAY,
+) {
+    companion object {
+        const val DEFAULT_CHECK_IN_DELAY = 60
+        const val DEFAULT_CHECK_OUT_DELAY = 15
+        const val MAX_DELAY = 3 * 60
     }
 }

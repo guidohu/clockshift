@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Pro: automatic check-in/out. Location is needed to read the Wi-Fi name and for the geofence. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!--
+        Google Play Billing talks to the Play Store app on the device and needs no network access of its own.
+        Its bundled telemetry library would add the Internet permission; ClockShift keeps its promise of never
+        going online, so the permission is removed again.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
 
     <application
         android:name=".ClockShiftApp"
@@ -26,12 +41,31 @@
             </intent-filter>
         </activity>
 
+        <!-- Shares exported timesheets from the app's cache with the app the user picks. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/export_paths" />
+        </provider>
+
         <receiver
             android:name=".notify.ReminderReceiver"
             android:exported="false" />
 
         <receiver
             android:name=".notify.NotificationActionReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".notify.SmartReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".autotrack.AutoTrackReceiver"
             android:exported="false" />
 
         <receiver

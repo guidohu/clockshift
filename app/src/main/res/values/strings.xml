@@ -43,15 +43,19 @@
     <string name="welcome_point_2_title">Standard days</string>
     <string name="welcome_point_2_text">Forget to log? Your usual hours are assumed, so nothing piles up.</string>
     <string name="welcome_point_3_title">Overtime that adds up</string>
+    <string name="welcome_restore_hint">Moving from another phone? Start from a ClockShift backup.</string>
     <string name="welcome_point_3_text">Work more and it builds up. Work less and it is deducted.</string>
     <string name="setup_schedule_title">Your work week</string>
     <string name="setup_schedule_subtitle">Choose your working days and tell us how many hours you need to work. Your usual times are only used to fill in standard days.</string>
     <string name="setup_start_title">Starting point</string>
     <string name="setup_start_subtitle">From when should overtime be counted, and do you already have a balance?</string>
     <string name="setup_start_hint">Days without a log count as standard days, so you only need to record the days that were different.</string>
-    <string name="setup_reminder_title">Evening reminder</string>
-    <string name="setup_reminder_subtitle">A gentle nudge after work, so you never have to remember to log.</string>
-    <string name="setup_reminder_hint">You can change or switch off the reminder at any time in Settings.</string>
+    <string name="setup_reminder_title">Reminders</string>
+    <string name="setup_reminder_subtitle">A gentle nudge in the morning and after work, so you never have to remember to log.</string>
+    <string name="setup_auto_title">Automatic check-in</string>
+    <string name="setup_auto_subtitle">Let ClockShift notice when you arrive at work and leave, by office Wi‑Fi or by location.</string>
+    <string name="setup_auto_hint">Your location and Wi‑Fi names stay on this phone. You can set this up or change it later in Settings.</string>
+    <string name="setup_reminder_hint">You can change or switch off each reminder at any time in Settings › Notifications.</string>
 
     <!-- Schedule editor -->
     <string name="schedule_working_days">Working days</string>
@@ -89,12 +93,12 @@
     <string name="balance_minutes">Minutes</string>
 
     <!-- Reminder -->
-    <string name="reminder_switch_title">Daily reminder</string>
+    <string name="reminder_switch_title">Work end reminder</string>
     <string name="reminder_switch_summary">Ask each evening whether to log the standard day or customise it</string>
     <string name="reminder_time_label">Remind me at</string>
     <string name="reminder_blocked">Notifications are turned off for ClockShift, so the reminder cannot reach you.</string>
     <string name="reminder_allow">Allow notifications</string>
-    <string name="channel_name">Daily reminder</string>
+    <string name="channel_name">Work end reminder</string>
     <string name="channel_description">Asks in the evening whether to log your standard day or customise it</string>
     <string name="reminder_title">How was your day?</string>
     <string name="reminder_text_log">Log your standard %1$s or customise the day.</string>
@@ -104,6 +108,97 @@
     <string name="action_check_out_now">Check out now</string>
     <string name="confirm_logged">Logged %1$s for today</string>
     <string name="confirm_checked_out">You’re checked out. Have a good evening!</string>
+    <string name="confirm_checked_in">Checked in at %1$s</string>
+    <string name="confirm_check_in_undone">Check-in undone</string>
+    <string name="confirm_check_out_undone">You’re checked in again</string>
+
+    <!-- Work start / daily hours reached reminders -->
+    <string name="channel_work_name">Check-in and check-out reminders</string>
+    <string name="channel_work_description">Reminds you to check in when your work day starts and to check out when you’re done</string>
+    <string name="work_start_title">Started work yet?</string>
+    <string name="work_start_text">Your day usually starts at %1$s and you haven’t checked in.</string>
+    <string name="action_check_in_now">Check in now</string>
+    <string name="action_started_at">Started at %1$s</string>
+    <string name="work_done_title">You’ve worked your hours</string>
+    <string name="work_done_text">You reached today’s target at %1$s. Time to check out?</string>
+    <string name="action_check_out_at">Check out at %1$s</string>
+    <string name="work_start_switch">Work start reminder</string>
+    <string name="work_start_summary">An hour after your planned start, if you haven’t checked in</string>
+    <string name="work_start_summary_pro">%1$s after the time you usually start, if you haven’t checked in</string>
+    <string name="work_start_delay">Remind me after my usual start</string>
+    <string name="work_done_switch">Daily hours reached</string>
+    <string name="work_done_summary">Remind me to check out once I’ve worked my hours</string>
+    <string name="work_done_delay">Remind me after reaching my hours</string>
+    <string name="work_reminders_pro_hint">With Pro, the work start reminder also learns when you usually start, and you choose how long it waits.</string>
+
+    <!-- Automatic check-in (Pro) -->
+    <string name="channel_auto_name">Automatic check-in</string>
+    <string name="channel_auto_description">Tells you when ClockShift checked you in or out because you arrived at or left work</string>
+    <string name="auto_checked_in_title">Checked in at %1$s</string>
+    <string name="auto_checked_in_text">You arrived at work.</string>
+    <string name="auto_checked_out_title">Checked out at %1$s</string>
+    <string name="auto_checked_out_text">You left work.</string>
+    <string name="auto_ask_in_title">Arrived at work</string>
+    <string name="auto_ask_in_text">You got here at %1$s. Check in?</string>
+    <string name="action_check_in_at">Check in at %1$s</string>
+    <string name="action_not_now">Not now</string>
+    <string name="auto_ask_out_title">Left work</string>
+    <string name="auto_ask_out_text">You left at %1$s. Check out?</string>
+    <string name="action_still_working">Still working</string>
+    <string name="auto_mode_off">Off</string>
+    <string name="auto_mode_wifi">Office Wi‑Fi</string>
+    <string name="auto_mode_location">Location</string>
+    <string name="auto_off_hint">Check in and out on your own. Turn this on to have ClockShift notice when you arrive at and leave work.</string>
+    <string name="auto_wifi_hint">ClockShift checks you in when your phone joins one of these networks and checks you out after it has been gone for a while.</string>
+    <string name="auto_wifi_remove">Remove %1$s</string>
+    <string name="auto_wifi_add_current">Add current Wi‑Fi</string>
+    <string name="auto_wifi_enter">Enter name</string>
+    <string name="auto_wifi_not_connected">Not connected to Wi‑Fi, or the network name is hidden.</string>
+    <string name="auto_wifi_enter_title">Office Wi‑Fi</string>
+    <string name="auto_wifi_name">Network name</string>
+    <string name="auto_location_hint">ClockShift checks you in when you arrive within the radius around your workplace and checks you out when you leave it.</string>
+    <string name="auto_location_not_set">No workplace set yet</string>
+    <string name="auto_location_set">Workplace at %1$s</string>
+    <string name="auto_location_use_current">Use my current location</string>
+    <string name="auto_location_update">Move to my current location</string>
+    <string name="auto_location_failed">Couldn’t find your location. Make sure location is on and try again.</string>
+    <string name="auto_location_radius">Radius %1$d m</string>
+    <string name="auto_no_play_services">Location-based check-in needs Google Play services, which this device doesn’t have. Office Wi‑Fi works without it.</string>
+    <string name="auto_permission_needed">To notice when you arrive or leave while ClockShift is closed, allow location access “all the time”. Android needs it to show the Wi‑Fi name and for the workplace area. Your location never leaves this phone.</string>
+    <string name="auto_permission_allow">Allow location</string>
+    <string name="auto_permission_settings">App settings</string>
+    <string name="auto_location_off">Location is turned off, so ClockShift can’t tell when you arrive or leave.</string>
+    <string name="auto_location_turn_on">Turn on</string>
+    <string name="auto_behaviour_automatic">Automatically</string>
+    <string name="auto_behaviour_ask">Ask me first</string>
+    <string name="auto_behaviour_automatic_hint">Checks you in and out on its own and tells you, with an undo button.</string>
+    <string name="auto_behaviour_ask_hint">Sends a notification with the time you arrived or left; one tap checks you in or out.</string>
+    <string name="auto_workdays_only">Only on working days</string>
+    <string name="auto_workdays_only_summary">No automatic check-in on weekends and days off</string>
+    <string name="auto_leave_delay">Count as gone after</string>
+    <string name="auto_leave_delay_hint">You’re checked out at the time you left, once you’ve been away this long. Shorter trips, like lunch nearby, don’t end your day.</string>
+    <string name="auto_locked">Check in and out automatically when you arrive at and leave work, by office Wi‑Fi or location. Part of ClockShift Pro.</string>
+
+    <!-- Pro -->
+    <string name="pro_badge">PRO</string>
+    <string name="pro_title">ClockShift Pro</string>
+    <string name="pro_pitch">ClockShift stays free. Pro adds conveniences and keeps the app going, still without ads, accounts or data leaving your phone.</string>
+    <string name="pro_point_auto">Automatic check-in and check-out by office Wi‑Fi or location</string>
+    <string name="pro_point_start">A work start reminder that learns when you usually start</string>
+    <string name="pro_point_done">A reminder to check out once you’ve worked your hours</string>
+    <string name="pro_point_export">PDF and CSV timesheets for any period</string>
+    <string name="pro_point_backup">Daily automatic backups to a folder or cloud storage</string>
+    <string name="pro_unavailable">Pro is sold through Google Play, which isn’t available right now.</string>
+    <string name="pro_price_week">Subscribe · %1$s per week</string>
+    <string name="pro_price_month">Subscribe · %1$s per month</string>
+    <string name="pro_price_year">Subscribe · %1$s per year</string>
+    <string name="pro_price_other">Subscribe · %1$s</string>
+    <string name="pro_active">Pro is active</string>
+    <string name="pro_active_summary">Thank you for supporting ClockShift!</string>
+    <string name="pro_manage">Manage</string>
+    <string name="pro_debug_unlock">Unlock Pro for testing</string>
+    <string name="pro_debug_unlock_summary">Debug builds only; no purchase is made</string>
+    <string name="pro_debug_lock">Lock</string>
 
     <!-- Today -->
     <string name="today_ready">Ready to start?</string>
@@ -171,7 +266,10 @@
     <!-- History -->
     <string name="history_checked_in">Checked in</string>
     <string name="history_since">Since %1$s</string>
-    <string name="history_selected_count">%1$d selected</string>
+    <plurals name="history_selected_count">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
     <string name="history_delete_message">Entries and day-off marks of the selected days are removed. Days in the past count as standard days again.</string>
     <plurals name="history_delete_title">
         <item quantity="one">Delete %1$d day?</item>
@@ -225,6 +323,84 @@
     <string name="breakdown_title">Breakdown</string>
     <string name="breakdown_detail">%1$s worked · %2$s target</string>
 
+    <!-- Export (Pro) -->
+    <string name="cd_export">Export timesheet</string>
+    <string name="export_title">Export timesheet</string>
+    <string name="export_range">%1$s – %2$s</string>
+    <string name="export_nothing">Nothing has been tracked in this period yet.</string>
+    <string name="export_format_pdf">PDF</string>
+    <string name="export_format_csv">CSV</string>
+    <string name="export_format_pdf_hint">A printable timesheet with a summary and a row per day.</string>
+    <string name="export_format_csv_hint">For spreadsheets: one row per day, durations in decimal hours.</string>
+    <string name="export_entries">Include individual entries</string>
+    <string name="export_entries_summary">List every work block and break, not just one line per day</string>
+    <string name="export_share">Share</string>
+    <string name="export_save">Save to device</string>
+    <string name="export_share_title">Share timesheet</string>
+    <string name="export_saved">Timesheet saved</string>
+    <string name="export_failed">Couldn’t save the timesheet</string>
+    <string name="ts_title">Timesheet</string>
+    <string name="ts_date">Date</string>
+    <string name="ts_weekday">Weekday</string>
+    <string name="ts_type">Type</string>
+    <string name="ts_break">Break</string>
+    <string name="ts_overtime">Overtime</string>
+    <string name="ts_duration">Duration</string>
+    <string name="ts_total">Total</string>
+    <string name="ts_balance_before">Balance before this period</string>
+    <string name="ts_balance_after">Balance at end</string>
+    <string name="ts_generated">Generated %1$s</string>
+    <string name="ts_page">Page %1$d of %2$d</string>
+    <string name="ts_kind_worked">Worked</string>
+    <string name="ts_kind_standard">Standard day</string>
+    <string name="ts_kind_day_off">Day off</string>
+    <string name="ts_kind_free">No work</string>
+    <string name="ts_kind_in_progress">In progress</string>
+    <string name="ts_kind_open">Not logged yet</string>
+    <string name="ts_day_off_suffix">(day off)</string>
+
+    <!-- Backup and restore -->
+    <string name="backup_hint">Save all your data to a file, for example before switching phones, and restore it here.</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_restore">Restore</string>
+    <string name="backup_saved">Backup saved</string>
+    <string name="backup_save_failed">Couldn’t save the backup</string>
+    <string name="backup_invalid">This file isn’t a ClockShift backup, or it’s damaged.</string>
+    <string name="backup_restored">Your data was restored</string>
+    <string name="backup_restore_title">Restore backup from %1$s?</string>
+    <plurals name="backup_restore_entries">
+        <item quantity="one">%1$d work block</item>
+        <item quantity="other">%1$d work blocks</item>
+    </plurals>
+    <plurals name="backup_restore_days_off">
+        <item quantity="one">%1$d day off</item>
+        <item quantity="other">%1$d days off</item>
+    </plurals>
+    <string name="backup_restore_warning">Everything currently in ClockShift is replaced by the backup. This can’t be undone.</string>
+    <string name="backup_restore_confirm">Restore</string>
+    <string name="backup_daily">Daily backup</string>
+    <string name="backup_daily_summary">Every day, to a folder on this phone or in a storage app such as Nextcloud or ownCloud</string>
+    <string name="backup_daily_locked">Part of ClockShift Pro.</string>
+    <string name="backup_target_unknown">the chosen location</string>
+    <plurals name="backup_target_folder">
+        <item quantity="one">Saving to %1$s. The last %2$d backup is kept.</item>
+        <item quantity="other">Saving to %1$s. The last %2$d backups are kept.</item>
+    </plurals>
+    <string name="backup_target_file">Saving to %1$s, replaced every day.</string>
+    <string name="backup_status_ok">Last backup: %1$s</string>
+    <string name="backup_status_none">No backup yet</string>
+    <string name="backup_status_failed">Last backup failed (%1$s): %2$s</string>
+    <string name="backup_error_no_access">ClockShift can no longer reach the backup location. Choose it again.</string>
+    <string name="backup_error_write">The backup couldn’t be written. ClockShift will try again tomorrow.</string>
+    <string name="backup_change_folder">Change folder</string>
+    <string name="backup_use_folder">Use a folder</string>
+    <string name="backup_run_now">Back up now</string>
+    <string name="backup_use_file">Use a single file instead</string>
+    <string name="backup_use_file_hint">For storage apps that don’t offer folders, such as Google Drive: one file, replaced every day.</string>
+    <string name="channel_backup_name">Backups</string>
+    <string name="channel_backup_description">Tells you when the daily backup could not be saved</string>
+    <string name="backup_failed_title">Daily backup failed</string>
+
     <!-- Day editor -->
     <string name="day_off_title">Day off</string>
     <string name="day_off_summary">No target. Time you log counts as overtime.</string>
@@ -248,7 +424,17 @@
     <string name="settings_schedule">Work schedule</string>
     <string name="settings_schedule_hint">Changes apply from today. Earlier days keep the hours they had.</string>
     <string name="settings_tracking">Overtime tracking</string>
-    <string name="settings_reminder">Daily reminder</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="notifications_reminders">Reminders</string>
+    <string name="notifications_smart">Smart reminders</string>
+    <string name="notifications_summary_start">Work start</string>
+    <string name="notifications_summary_end">Work end at %1$s</string>
+    <string name="notifications_summary_done">Hours reached</string>
+    <string name="notifications_summary_none">All reminders are off</string>
+    <string name="settings_auto">Automatic check-in</string>
+    <string name="settings_export">Export timesheet</string>
+    <string name="settings_export_summary">PDF or CSV for any period</string>
+    <string name="settings_backup">Backup and restore</string>
     <string name="settings_about_version">%1$s %2$s</string>
     <string name="settings_about_privacy">All data stays on this device.</string>
 </resources>

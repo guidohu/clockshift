@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.github.guidohu.clockshift.domain.AutoTrackMode
+import com.github.guidohu.clockshift.domain.AutoTrackSettings
 import com.github.guidohu.clockshift.domain.Settings
+import com.github.guidohu.clockshift.domain.SmartReminderSettings
 import com.github.guidohu.clockshift.domain.WeekSchedule
 import java.time.LocalDate
 
-enum class SetupStep { Welcome, Schedule, Start, Reminder }
+enum class SetupStep { Welcome, Schedule, Start, Reminder, AutoTrack }
 
 /** Holds the wizard's answers until the user finishes, so rotating the screen loses nothing. */
 class SetupViewModel : ViewModel() {
@@ -25,6 +28,14 @@ class SetupViewModel : ViewModel() {
         private set
     var reminderMinute by mutableIntStateOf(Settings.DEFAULT_REMINDER_MINUTE)
         private set
+    var workReminders by mutableStateOf(SmartReminderSettings())
+        private set
+    var autoTrack by mutableStateOf(AutoTrackSettings())
+        private set
+
+    /** Whether finishing should ask for the notification permission. */
+    val wantsNotifications: Boolean
+        get() = reminderEnabled || workReminders.checkIn || workReminders.checkOut || autoTrack.mode != AutoTrackMode.Off
 
     private var reminderEdited = false
 
@@ -65,12 +76,22 @@ class SetupViewModel : ViewModel() {
         reminderMinute = value
     }
 
+    fun updateWorkReminders(value: SmartReminderSettings) {
+        workReminders = value
+    }
+
+    fun updateAutoTrack(value: AutoTrackSettings) {
+        autoTrack = value
+    }
+
     fun toSettings() = Settings(
         setupDone = true,
         startDate = startDate,
         openingBalanceMinutes = openingBalanceMinutes,
         reminderEnabled = reminderEnabled,
         reminderMinute = reminderMinute,
+        autoTrack = autoTrack,
+        smartReminders = workReminders,
     )
 
     private fun suggestedReminderMinute(week: WeekSchedule): Int {

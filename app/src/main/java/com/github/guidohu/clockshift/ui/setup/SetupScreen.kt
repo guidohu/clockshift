@@ -52,7 +52,12 @@ import com.github.guidohu.clockshift.R
 import com.github.guidohu.clockshift.ui.ClockActions
 import com.github.guidohu.clockshift.ui.components.NotificationPermission
 import com.github.guidohu.clockshift.ui.components.rememberNotificationPermission
-import com.github.guidohu.clockshift.ui.settings.ReminderSection
+import com.github.guidohu.clockshift.ui.backup.BackupRestoreButtons
+import com.github.guidohu.clockshift.ui.pro.LocalPro
+import com.github.guidohu.clockshift.ui.pro.ProUpsellCard
+import com.github.guidohu.clockshift.ui.settings.AutoTrackSection
+import com.github.guidohu.clockshift.ui.settings.ProRemindersSection
+import com.github.guidohu.clockshift.ui.settings.WorkRemindersSection
 import com.github.guidohu.clockshift.ui.settings.ScheduleEditor
 import com.github.guidohu.clockshift.ui.settings.TrackingFields
 
@@ -76,7 +81,7 @@ fun SetupScreen(viewModel: SetupViewModel, actions: ClockActions) {
                 onNext = {
                     when {
                         !viewModel.isLastStep -> viewModel.next()
-                        viewModel.reminderEnabled && permission.needsRuntimePrompt -> permission.request()
+                        viewModel.wantsNotifications && permission.needsRuntimePrompt -> permission.request()
                         else -> finish()
                     }
                 },
@@ -106,6 +111,7 @@ fun SetupScreen(viewModel: SetupViewModel, actions: ClockActions) {
                     SetupStep.Schedule -> ScheduleStep(viewModel)
                     SetupStep.Start -> StartStep(viewModel)
                     SetupStep.Reminder -> ReminderStep(viewModel, permission)
+                    SetupStep.AutoTrack -> AutoTrackStep(viewModel)
                 }
             }
         }
@@ -200,6 +206,14 @@ private fun WelcomeStep() {
             WelcomePoint(Icons.Filled.EventAvailable, R.string.welcome_point_2_title, R.string.welcome_point_2_text)
             WelcomePoint(Icons.AutoMirrored.Filled.TrendingUp, R.string.welcome_point_3_title, R.string.welcome_point_3_text)
         }
+        Spacer(Modifier.height(32.dp))
+        Text(
+            stringResource(R.string.welcome_restore_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(8.dp))
+        BackupRestoreButtons(showBackup = false)
     }
 }
 
@@ -248,17 +262,37 @@ private fun StartStep(viewModel: SetupViewModel) {
 @Composable
 private fun ReminderStep(viewModel: SetupViewModel, permission: NotificationPermission) {
     StepHeader(stringResource(R.string.setup_reminder_title), stringResource(R.string.setup_reminder_subtitle))
-    ReminderSection(
-        enabled = viewModel.reminderEnabled,
-        minuteOfDay = viewModel.reminderMinute,
+    WorkRemindersSection(
+        reminders = viewModel.workReminders,
+        onRemindersChange = viewModel::updateWorkReminders,
+        endEnabled = viewModel.reminderEnabled,
+        endMinute = viewModel.reminderMinute,
+        onEndEnabledChange = viewModel::updateReminderEnabled,
+        onEndMinuteChange = viewModel::updateReminderMinute,
         permission = permission,
-        onEnabledChange = viewModel::updateReminderEnabled,
-        onMinuteChange = viewModel::updateReminderMinute,
         showPermissionNotice = false,
     )
+    Spacer(Modifier.height(8.dp))
+    ProRemindersSection(reminders = viewModel.workReminders, onRemindersChange = viewModel::updateWorkReminders)
     Spacer(Modifier.height(16.dp))
     Text(
         stringResource(R.string.setup_reminder_hint),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun AutoTrackStep(viewModel: SetupViewModel) {
+    StepHeader(stringResource(R.string.setup_auto_title), stringResource(R.string.setup_auto_subtitle))
+    if (LocalPro.current.isPro) {
+        AutoTrackSection(settings = viewModel.autoTrack, onChange = viewModel::updateAutoTrack)
+    } else {
+        ProUpsellCard()
+    }
+    Spacer(Modifier.height(16.dp))
+    Text(
+        stringResource(R.string.setup_auto_hint),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )

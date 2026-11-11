@@ -14,7 +14,7 @@
 </head>
 <body>
   <h1>Privacy Policy — ClockShift</h1>
-  <p class="updated">Last updated: October 8, 2026</p>
+  <p class="updated">Last updated: November 10, 2026</p>
 
   <p><strong>ClockShift does not collect personal data, and nothing you enter ever leaves your device because of the app.</strong></p>
 
@@ -30,6 +30,10 @@
     <li>Your time entries: check-in and check-out times, breaks, and any notes you write.</li>
     <li>Days you marked as days off.</li>
     <li>Your settings: tracking start date, starting overtime balance, and reminder preferences.</li>
+    <li>
+      If you use automatic check-in (ClockShift Pro): the names of your office Wi‑Fi networks, or the
+      coordinates and radius of your workplace, and when your phone last arrived at or left work.
+    </li>
   </ul>
   <p>
     All of this is stored locally on your device only, in a private database that other apps cannot read.
@@ -41,22 +45,86 @@
     <li>It does not request the Internet permission and makes no network requests of any kind.</li>
     <li>It has no accounts, sign-in, or user profile.</li>
     <li>It contains no analytics, advertising, crash-reporting, or third-party tracking code.</li>
-    <li>It does not access your location, contacts, camera, microphone, photos, or files.</li>
+    <li>
+      It does not access your contacts, camera, microphone, photos, or files. It uses your location only
+      for the optional automatic check-in described below, and never sends it anywhere.
+    </li>
     <li>It does not share, sell, or transfer your data to anyone.</li>
   </ul>
 
   <h2>Permissions the app uses</h2>
   <ul>
     <li>
-      <strong>Notifications</strong> (<code>POST_NOTIFICATIONS</code>): to show the optional daily reminder.
-      The reminder is generated on your device. You can switch it off in the app or deny the permission,
-      and the rest of the app keeps working.
+      <strong>Notifications</strong> (<code>POST_NOTIFICATIONS</code>): to show the optional reminders and
+      automatic check-in notices. They are generated on your device. You can switch each one off in the app
+      or deny the permission, and the rest of the app keeps working.
     </li>
     <li>
-      <strong>Receive boot completed</strong> (<code>RECEIVE_BOOT_COMPLETED</code>): so the reminder is
-      scheduled again after your device restarts, the app is updated, or the time or time zone changes.
+      <strong>Receive boot completed</strong> (<code>RECEIVE_BOOT_COMPLETED</code>): so reminders and automatic
+      check-in are set up again after your device restarts, the app is updated, or the time or time zone changes.
+    </li>
+    <li>
+      <strong>Location</strong> (<code>ACCESS_FINE_LOCATION</code>, <code>ACCESS_COARSE_LOCATION</code>,
+      <code>ACCESS_BACKGROUND_LOCATION</code>): only for the optional automatic check-in, as described above.
+      It is requested only when you set that feature up.
+    </li>
+    <li>
+      <strong>Network and Wi‑Fi state</strong> (<code>ACCESS_NETWORK_STATE</code>, <code>ACCESS_WIFI_STATE</code>):
+      to notice when your phone joins a Wi‑Fi network, for automatic check-in by office Wi‑Fi. These do not
+      allow the app to go online.
+    </li>
+    <li>
+      <strong>Wake lock and foreground service</strong> (<code>WAKE_LOCK</code>, <code>FOREGROUND_SERVICE</code>):
+      added by Android's WorkManager library, which runs the optional daily backup reliably in the background.
+    </li>
+    <li>
+      <strong>Google Play billing</strong> (<code>com.android.vending.BILLING</code>): to offer the optional
+      ClockShift Pro subscription through the Play Store app.
     </li>
   </ul>
+
+  <h2>Automatic check-in (optional, ClockShift Pro)</h2>
+  <p>
+    If you turn on automatic check-in, ClockShift notices when you arrive at and leave work so it can check
+    you in and out. It works in one of two ways, which you choose:
+  </p>
+  <ul>
+    <li>
+      <strong>Office Wi‑Fi:</strong> the app compares the name of the Wi‑Fi network your phone is connected to
+      with the names you entered. Android only reveals network names to apps with location permission,
+      which is why this mode asks for it.
+    </li>
+    <li>
+      <strong>Location:</strong> the app asks Google Play services on your device to report when your phone
+      enters or leaves an area around your workplace (a geofence). How Google Play services determines
+      location is governed by your device's location settings and
+      <a href="https://policies.google.com/privacy">Google's privacy policy</a>.
+    </li>
+  </ul>
+  <p>
+    To work while the app is closed, automatic check-in needs location access "all the time". The decision
+    to check you in or out is made on your device, and the only things stored are those listed above.
+    Nothing about your location or networks is sent to the developer or anyone else. Turning automatic
+    check-in off, or denying the permission, stops it; the rest of the app keeps working.
+  </p>
+
+  <h2>Exports and backups</h2>
+  <p>
+    You can export a timesheet (PDF or CSV) and save a backup of all your data. These files are only created
+    when you ask for them, and they go only where you send them: a location you pick with Android's file
+    picker, or the app you choose in the share sheet. The optional daily backup (ClockShift Pro) writes to a
+    folder or file you chose the same way, which may belong to a storage app such as Nextcloud, ownCloud or
+    Google Drive. What that app does with the file is governed by its own terms; ClockShift itself does not
+    upload anything. Restoring a backup replaces the data in the app with the data from the file you pick.
+  </p>
+
+  <h2>Purchases</h2>
+  <p>
+    ClockShift Pro is a subscription sold through Google Play. Payment is handled entirely by Google; the app
+    only learns from the Play Store app on your device whether a subscription is active. The developer does
+    not receive your payment details. Purchases are governed by
+    <a href="https://policies.google.com/privacy">Google's privacy policy</a> and the Google Play terms.
+  </p>
 
   <h2>Android backup</h2>
   <p>

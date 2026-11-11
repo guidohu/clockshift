@@ -1,7 +1,11 @@
 package com.github.guidohu.clockshift.data
 
 import androidx.room.withTransaction
+import com.github.guidohu.clockshift.domain.AutoTrackMode
+import com.github.guidohu.clockshift.domain.AutoTrackSettings
+import com.github.guidohu.clockshift.domain.GeoPoint
 import com.github.guidohu.clockshift.domain.Settings
+import com.github.guidohu.clockshift.domain.SmartReminderSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
@@ -25,6 +29,25 @@ private fun SettingsEntity.toDomain() = Settings(
     openingBalanceMinutes = openingBalanceMinutes,
     reminderEnabled = reminderEnabled,
     reminderMinute = reminderMinute,
+    autoTrack = AutoTrackSettings(
+        mode = AutoTrackMode.entries.getOrElse(autoTrackMode) { AutoTrackMode.Off },
+        wifiNames = autoTrackWifi.lines().filter { it.isNotBlank() },
+        workplace = if (autoTrackLatitude != null && autoTrackLongitude != null) {
+            GeoPoint(autoTrackLatitude, autoTrackLongitude)
+        } else {
+            null
+        },
+        radiusMeters = autoTrackRadius,
+        askFirst = autoTrackAsk,
+        workingDaysOnly = autoTrackWorkdaysOnly,
+        leaveDelayMinutes = autoTrackLeaveDelay,
+    ),
+    smartReminders = SmartReminderSettings(
+        checkIn = checkInReminder,
+        checkInDelayMinutes = checkInReminderDelay,
+        checkOut = checkOutReminder,
+        checkOutDelayMinutes = checkOutReminderDelay,
+    ),
 )
 
 private fun Settings.toEntity() = SettingsEntity(
@@ -33,4 +56,16 @@ private fun Settings.toEntity() = SettingsEntity(
     openingBalanceMinutes = openingBalanceMinutes,
     reminderEnabled = reminderEnabled,
     reminderMinute = reminderMinute,
+    autoTrackMode = autoTrack.mode.ordinal,
+    autoTrackWifi = autoTrack.wifiNames.joinToString("\n"),
+    autoTrackLatitude = autoTrack.workplace?.latitude,
+    autoTrackLongitude = autoTrack.workplace?.longitude,
+    autoTrackRadius = autoTrack.radiusMeters,
+    autoTrackAsk = autoTrack.askFirst,
+    autoTrackWorkdaysOnly = autoTrack.workingDaysOnly,
+    autoTrackLeaveDelay = autoTrack.leaveDelayMinutes,
+    checkInReminder = smartReminders.checkIn,
+    checkInReminderDelay = smartReminders.checkInDelayMinutes,
+    checkOutReminder = smartReminders.checkOut,
+    checkOutReminderDelay = smartReminders.checkOutDelayMinutes,
 )

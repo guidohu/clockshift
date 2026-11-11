@@ -45,11 +45,11 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -92,7 +92,7 @@ fun HistoryScreen(
     val today = now.toLocalDate()
     val dateLabels = rememberDateLabels()
     val timeFormat = rememberTimeFormatter()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var datePickerOpen by rememberSaveable { mutableStateOf(false) }
     var addForEpochDay by rememberSaveable { mutableStateOf<Long?>(null) }
     val snackbar = remember { SnackbarHostState() }
@@ -151,10 +151,10 @@ fun HistoryScreen(
         snackbarHost = { SnackbarHost(snackbar) },
         // One bar for both modes, so the list below keeps its place when the selection starts.
         topBar = {
-            LargeTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
-                        if (selecting) stringResource(R.string.history_selected_count, selectedDays.size)
+                        if (selecting) pluralStringResource(R.plurals.history_selected_count, selectedDays.size, selectedDays.size)
                         else stringResource(R.string.nav_history),
                     )
                 },

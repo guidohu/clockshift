@@ -27,6 +27,15 @@ interface EntryDao {
 
     @Query("DELETE FROM entry WHERE id = :id")
     suspend fun delete(id: Long)
+
+    @Query("SELECT * FROM entry ORDER BY startAt")
+    suspend fun getAll(): List<EntryEntity>
+
+    @Query("DELETE FROM entry")
+    suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entries: List<EntryEntity>)
 }
 
 @Dao
@@ -42,6 +51,15 @@ interface DayOffDao {
 
     @Query("DELETE FROM day_off WHERE date = :date")
     suspend fun delete(date: Long)
+
+    @Query("SELECT * FROM day_off ORDER BY date")
+    suspend fun getAll(): List<DayOffEntity>
+
+    @Query("DELETE FROM day_off")
+    suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(daysOff: List<DayOffEntity>)
 }
 
 @Dao
@@ -69,6 +87,12 @@ interface ScheduleDao {
 
     @Query("DELETE FROM schedule_break WHERE effectiveFrom = :effectiveFrom")
     suspend fun deleteBreaks(effectiveFrom: Long)
+
+    @Query("DELETE FROM schedule_day")
+    suspend fun deleteAllDays()
+
+    @Query("DELETE FROM schedule_break")
+    suspend fun deleteAllBreaks()
 
     @Transaction
     suspend fun replaceVersion(effectiveFrom: Long, days: List<ScheduleDayEntity>, breaks: List<ScheduleBreakEntity>) {

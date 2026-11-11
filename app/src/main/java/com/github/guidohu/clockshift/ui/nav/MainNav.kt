@@ -37,6 +37,7 @@ import com.github.guidohu.clockshift.ui.ClockActions
 import com.github.guidohu.clockshift.ui.day.DayScreen
 import com.github.guidohu.clockshift.ui.history.HistoryScreen
 import com.github.guidohu.clockshift.ui.overview.OverviewScreen
+import com.github.guidohu.clockshift.ui.settings.NotificationsScreen
 import com.github.guidohu.clockshift.ui.settings.SettingsScreen
 import com.github.guidohu.clockshift.ui.today.TodayScreen
 import java.time.LocalDate
@@ -46,6 +47,7 @@ private object Routes {
     const val HISTORY = "history"
     const val OVERVIEW = "overview"
     const val SETTINGS = "settings"
+    const val NOTIFICATIONS = "settings/notifications"
     const val DAY = "day/{epochDay}?add={add}"
     const val ARG_EPOCH_DAY = "epochDay"
     const val ARG_ADD = "add"
@@ -141,7 +143,12 @@ fun MainNav(
                 )
             }
             composable(Routes.OVERVIEW) { OverviewScreen(state) }
-            composable(Routes.SETTINGS) { SettingsScreen(state, actions) }
+            composable(Routes.SETTINGS) {
+                SettingsScreen(state, actions, onOpenNotifications = { navController.navigate(Routes.NOTIFICATIONS) })
+            }
+            composable(Routes.NOTIFICATIONS) {
+                NotificationsScreen(state, actions, onBack = { navController.popBackStack() })
+            }
             composable(
                 route = Routes.DAY,
                 arguments = listOf(

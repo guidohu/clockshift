@@ -22,8 +22,8 @@ android {
         applicationId = "com.github.guidohu.clockshift"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.6"
     }
 
     signingConfigs {
@@ -53,6 +53,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     lint {
@@ -88,8 +89,15 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.billing)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.work.runtime)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit)
+    // Android's org.json is only a stub on the JVM; the real library lets the backup format be unit-tested.
+    testImplementation(libs.org.json)
+    // A real SQLite on the JVM, to run the Room migrations against the exported schemas.
+    testImplementation(libs.sqlite.jdbc)
 }
