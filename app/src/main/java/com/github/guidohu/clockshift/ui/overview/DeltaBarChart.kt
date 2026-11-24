@@ -92,11 +92,13 @@ fun DeltaBarChart(
             drawText(layout, topLeft = Offset(0f, topPad + plotHeight - layout.size.height))
         }
 
-        val maxLabels = max((size.width / 52.dp.toPx()).toInt(), 1)
+        // Spaced by the widest caption, so long ones (weeks with a year) don't run into each other.
+        val layouts = labels.map { measurer.measure(it, labelStyle) }
+        val widest = layouts.maxOfOrNull { it.size.width } ?: 0
+        val maxLabels = max((size.width / (widest + 12.dp.toPx())).toInt(), 1)
         val step = ceil(values.size / maxLabels.toFloat()).toInt().coerceAtLeast(1)
-        labels.forEachIndexed { index, label ->
+        layouts.forEachIndexed { index, layout ->
             if (index % step != 0) return@forEachIndexed
-            val layout = measurer.measure(label, labelStyle)
             val x = (slot * index + slot / 2 - layout.size.width / 2f).coerceIn(0f, size.width - layout.size.width)
             drawText(layout, topLeft = Offset(x, size.height - labelArea + 4.dp.toPx()))
         }

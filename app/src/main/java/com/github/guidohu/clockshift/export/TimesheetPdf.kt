@@ -73,26 +73,12 @@ class TimesheetPdf(
     }
 
     fun render(sheet: Timesheet, entries: Boolean): ByteArray {
-        val rows = sheet.days.mapIndexed { index, day ->
-            Row.Day(day, if (entries) details(day) else emptyList(), weekStart = index > 0 && day.date.dayOfWeek == firstDayOfWeek)
-        } + Row.Total
-        val pages = paginate(rows)
+        val pages = pages(sheet, entries)
         val document = PdfDocument()
         try {
             pages.forEachIndexed { index, pageRows ->
                 val page = document.startPage(PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, index + 1).create())
-                val canvas = page.canvas
-                var y = MARGIN
-                if (index == 0) y = drawHeader(canvas, sheet)
-                y = drawTableHeader(canvas, y)
-                pageRows.forEach { row ->
-                    when (row) {
-                        is Row.Day -> drawDay(canvas, row, y)
-                        Row.Total -> drawTotal(canvas, sheet, y)
-                    }
-                    y += row.height
-                }
-                drawFooter(canvas, index + 1, pages.size)
+                drawPage(page.canvas, sheet, pageRows, index, pages.size)
                 document.finishPage(page)
             }
             return ByteArrayOutputStream().use { out ->
@@ -102,6 +88,36 @@ class TimesheetPdf(
         } finally {
             document.close()
         }
+    }
+
+    /**
+     * Draws the first page onto any [canvas] in PDF points ([PAGE_WIDTH] x [PAGE_HEIGHT]),
+     * without a PdfDocument. Used for the Play Store screenshots.
+     */
+    fun drawFirstPage(canvas: Canvas, sheet: Timesheet, entries: Boolean) {
+        val pages = pages(sheet, entries)
+        drawPage(canvas, sheet, pages.first(), 0, pages.size)
+    }
+
+    private fun pages(sheet: Timesheet, entries: Boolean): List<List<Row>> {
+        val rows = sheet.days.mapIndexed { index, day ->
+            Row.Day(day, if (entries) details(day) else emptyList(), weekStart = index > 0 && day.date.dayOfWeek == firstDayOfWeek)
+        } + Row.Total
+        return paginate(rows)
+    }
+
+    private fun drawPage(canvas: Canvas, sheet: Timesheet, pageRows: List<Row>, index: Int, pageCount: Int) {
+        var y = MARGIN
+        if (index == 0) y = drawHeader(canvas, sheet)
+        y = drawTableHeader(canvas, y)
+        pageRows.forEach { row ->
+            when (row) {
+                is Row.Day -> drawDay(canvas, row, y)
+                Row.Total -> drawTotal(canvas, sheet, y)
+            }
+            y += row.height
+        }
+        drawFooter(canvas, index + 1, pageCount)
     }
 
     private fun paginate(rows: List<Row>): List<List<Row>> {
@@ -238,17 +254,17 @@ class TimesheetPdf(
         return text.substring(0, end) + "…"
     }
 
-    private companion object {
+    companion object {
         const val PAGE_WIDTH = 595 // A4 in points
         const val PAGE_HEIGHT = 842
-        const val MARGIN = 40f
-        const val CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN
-        const val HEADER_HEIGHT = 142f
-        const val PANEL_HEIGHT = 46f
-        const val TABLE_HEADER_HEIGHT = 20f
-        const val ROW_HEIGHT = 16f
-        const val DETAIL_HEIGHT = 10f
-        const val FOOTER_SPACE = 16f
+        private const val MARGIN = 40f
+        private const val CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN
+        private const val HEADER_HEIGHT = 142f
+        private const val PANEL_HEIGHT = 46f
+        private const val TABLE_HEADER_HEIGHT = 20f
+        private const val ROW_HEIGHT = 16f
+        private const val DETAIL_HEIGHT = 10f
+        private const val FOOTER_SPACE = 16f
     }
 }
 

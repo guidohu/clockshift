@@ -41,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,6 +58,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.github.guidohu.clockshift.R
+import java.time.Clock
 import com.github.guidohu.clockshift.domain.formatDuration
 import com.github.guidohu.clockshift.domain.formatSigned
 import com.github.guidohu.clockshift.domain.minuteOfDayToTime
@@ -84,15 +86,19 @@ fun rememberIs24Hour(): Boolean {
     return remember(context) { DateFormat.is24HourFormat(context) }
 }
 
+/** The clock behind [rememberNow]. The system clock in the app; fixed in the Play Store screenshot renders. */
+val LocalClock = staticCompositionLocalOf<Clock> { Clock.systemDefaultZone() }
+
 /** Current date-time, refreshed every [tickMillis] while the screen is visible. */
 @Composable
 fun rememberNow(tickMillis: Long = 1_000L): State<LocalDateTime> {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val now = remember { mutableStateOf(LocalDateTime.now()) }
+    val clock = LocalClock.current
+    val now = remember { mutableStateOf(LocalDateTime.now(clock)) }
     LaunchedEffect(lifecycle, tickMillis) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             while (true) {
-                now.value = LocalDateTime.now()
+                now.value = LocalDateTime.now(clock)
                 delay(tickMillis)
             }
         }

@@ -5,7 +5,14 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    // Renders the Play Store screenshots (StoreAssetsTest).
+    alias(libs.plugins.paparazzi)
 }
+
+// `-PstoreAssets` renders the Play Store screenshots (StoreAssetsTest, see play-store-assets/listing.md).
+// Paparazzi 1.3.4 can't render against SDK 36 yet, so that run compiles against 35.
+val storeAssets = providers.gradleProperty("storeAssets").isPresent
+val sdk = if (storeAssets) 35 else 36
 
 // Release signing credentials live outside version control: see keystore/keystore.properties
 // (gitignored). The release build is signed only when that file is present.
@@ -16,14 +23,14 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "com.github.guidohu.clockshift"
-    compileSdk = 36
+    compileSdk = sdk
 
     defaultConfig {
         applicationId = "com.github.guidohu.clockshift"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 7
-        versionName = "1.6"
+        targetSdk = sdk
+        versionCode = 9
+        versionName = "1.8"
     }
 
     signingConfigs {
@@ -70,6 +77,11 @@ kotlin {
     }
 }
 
+// The store screenshots only run when asked for; at SDK 36 Paparazzi would fail them.
+tasks.withType<Test>().configureEach {
+    if (!storeAssets) exclude("**/StoreAssetsTest*")
+}
+
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
@@ -100,4 +112,6 @@ dependencies {
     testImplementation(libs.org.json)
     // A real SQLite on the JVM, to run the Room migrations against the exported schemas.
     testImplementation(libs.sqlite.jdbc)
+    // Stands in for system services layoutlib lacks when rendering the store screenshots.
+    testImplementation(libs.mockk)
 }

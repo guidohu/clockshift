@@ -76,7 +76,7 @@ app/src/main/java/com/github/guidohu/clockshift/
   pro/       Pro subscription (Google Play Billing)
   ui/        Today, History, Overview, Day editor, Settings, Notifications, Setup wizard, theme
 docs/                 Privacy policy (publish with GitHub Pages)
-play-store-assets/    Icon source, 512 px icon and feature graphic for the Play Store
+play-store-assets/    Play Store listing text, icon, and the script that builds the screenshots (listing/)
 ```
 
 ## Privacy
