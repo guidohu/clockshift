@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -44,7 +45,8 @@ import com.github.guidohu.clockshift.ui.export.ExportSheet
 import com.github.guidohu.clockshift.ui.pro.LocalPro
 import com.github.guidohu.clockshift.ui.pro.ProActiveRow
 import com.github.guidohu.clockshift.ui.pro.ProBadge
-import com.github.guidohu.clockshift.ui.pro.ProUpsellCard
+import com.github.guidohu.clockshift.ui.pro.LOCKED_ALPHA
+import com.github.guidohu.clockshift.ui.pro.ProActivateCard
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,6 +79,9 @@ fun SettingsScreen(state: AppState, actions: ClockActions, onOpenNotifications: 
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            if (!pro.isPro) {
+                item(key = "pro-activate") { ProActivateCard() }
+            }
             item(key = "schedule") {
                 SettingsCard(title = stringResource(R.string.settings_schedule)) {
                     ScheduleEditor(
@@ -111,22 +116,20 @@ fun SettingsScreen(state: AppState, actions: ClockActions, onOpenNotifications: 
                     icon = Icons.Outlined.IosShare,
                     title = stringResource(R.string.settings_export),
                     summary = stringResource(R.string.settings_export_summary),
-                    badge = !pro.isPro,
-                    onClick = { exportOpen = true },
+                    locked = !pro.isPro,
+                    onClick = { if (pro.isPro) exportOpen = true else pro.showUpgrade() },
                 )
             }
             item(key = "backup") {
                 SettingsCard(title = stringResource(R.string.settings_backup)) { BackupSection() }
             }
-            item(key = "pro") {
-                if (pro.isPro) {
+            if (pro.isPro) {
+                item(key = "pro") {
                     SettingsCard(title = stringResource(R.string.pro_title)) { ProActiveRow() }
-                } else {
-                    ProUpsellCard()
                 }
             }
             item(key = "auto") {
-                SettingsCard(title = stringResource(R.string.settings_auto), badge = !pro.isPro) {
+                SettingsCard(title = stringResource(R.string.settings_auto), locked = !pro.isPro) {
                     if (pro.isPro) {
                         AutoTrackSection(
                             settings = settings.autoTrack,
@@ -137,6 +140,7 @@ fun SettingsScreen(state: AppState, actions: ClockActions, onOpenNotifications: 
                             stringResource(R.string.auto_locked),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.alpha(LOCKED_ALPHA),
                         )
                     }
                 }
@@ -160,19 +164,23 @@ fun SettingsScreen(state: AppState, actions: ClockActions, onOpenNotifications: 
     if (exportOpen) ExportSheet(state = state, onDismiss = { exportOpen = false })
 }
 
+/** A titled settings card. A [locked] card is a Pro feature without Pro: faded, marked PRO, and tapping it offers Pro. */
 @Composable
-internal fun SettingsCard(title: String, badge: Boolean = false, content: @Composable () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+internal fun SettingsCard(title: String, locked: Boolean = false, content: @Composable () -> Unit) {
+    val colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    val body: @Composable () -> Unit = {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(title, style = MaterialTheme.typography.titleLarge)
-                if (badge) ProBadge()
+                Text(title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.alpha(if (locked) LOCKED_ALPHA else 1f))
+                if (locked) ProBadge()
             }
             content()
         }
+    }
+    if (locked) {
+        Card(onClick = LocalPro.current.showUpgrade, colors = colors, modifier = Modifier.fillMaxWidth()) { body() }
+    } else {
+        Card(colors = colors, modifier = Modifier.fillMaxWidth()) { body() }
     }
 }
 
@@ -196,24 +204,30 @@ private fun NotificationsRow(state: AppState, onClick: () -> Unit) {
     )
 }
 
-/** A card that opens another screen or sheet. */
+/** A card that opens another screen or sheet. A [locked] card is a Pro feature without Pro: faded and marked PRO. */
 @Composable
-private fun NavigationCard(icon: ImageVector, title: String, summary: String, onClick: () -> Unit, badge: Boolean = false) {
+private fun NavigationCard(icon: ImageVector, title: String, summary: String, onClick: () -> Unit, locked: Boolean = false) {
+    val fade = Modifier.alpha(if (locked) LOCKED_ALPHA else 1f)
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = fade)
             Column(Modifier.weight(1f).padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(title, style = MaterialTheme.typography.titleLarge)
-                    if (badge) ProBadge()
+                    Text(title, style = MaterialTheme.typography.titleLarge, modifier = fade)
+                    if (locked) ProBadge()
                 }
-                Text(summary, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    summary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = fade,
+                )
             }
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, modifier = fade)
         }
     }
 }

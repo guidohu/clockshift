@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +36,7 @@ import com.github.guidohu.clockshift.container
 import com.github.guidohu.clockshift.ui.components.rememberDateLabels
 import com.github.guidohu.clockshift.ui.components.rememberTimeFormatter
 import com.github.guidohu.clockshift.ui.pro.LocalPro
-import com.github.guidohu.clockshift.ui.pro.ProBadge
+import com.github.guidohu.clockshift.ui.pro.LOCKED_ALPHA
 import com.github.guidohu.clockshift.ui.settings.SwitchRow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -181,7 +182,7 @@ private fun DailyBackup() {
             title = stringResource(R.string.backup_daily),
             summary = stringResource(R.string.backup_daily_summary),
             checked = active,
-            enabled = isPro,
+            locked = !isPro,
             onCheckedChange = { on ->
                 when {
                     !on -> backup.setDailyEnabled(false)
@@ -189,13 +190,13 @@ private fun DailyBackup() {
                     else -> backup.setDailyEnabled(true)
                 }
             },
-            trailing = { if (!isPro) ProBadge() },
         )
         if (!isPro) {
             Text(
                 stringResource(R.string.backup_daily_locked),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.alpha(LOCKED_ALPHA),
             )
             return@Column
         }

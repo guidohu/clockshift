@@ -2,8 +2,7 @@ package com.github.guidohu.clockshift.pro
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
+import android.util.Log
 import androidx.core.content.edit
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
@@ -25,22 +24,34 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-/** A subscription plan as offered in the Play Store, e.g. "CHF 1.50" per "P1M". */
+/** The one-time Pro purchase as offered in the Play Store, e.g. "CHF 4.90". */
 data class ProOffer(
-    val basePlanId: String,
     val formattedPrice: String,
-    /** ISO 8601 period of the recurring price: P1M, P1Y, … */
-    val billingPeriod: String,
-    internal val offerToken: String,
+    internal val offerToken: String?,
 )
 
+/** Where the connection to the Play Store stands, so the UI can say why Pro can't be bought right now. */
+enum class ProStoreStatus {
+    /** Still connecting to the Play Store or loading the product. */
+    Loading,
+
+    /** The product is loaded and can be bought. */
+    Ready,
+
+    /** Google Play billing isn't reachable: no Play Store, not signed in, or an outdated Play Store. */
+    BillingUnavailable,
+
+    /** Billing works but the Play Store doesn't know [ProManager.PRODUCT_ID] for this app and account. */
+    ProductNotFound,
+}
+
 /**
- * The Pro subscription, sold through Google Play Billing.
+ * Pro, sold as a one-time in-app product through Google Play Billing.
  *
  * The entitlement is cached locally so the background parts of the app (geofence, Wi-Fi and reminder
  * receivers) can check it without talking to the Play Store. It is refreshed whenever the app comes to
- * the foreground; an expired or refunded subscription disappears from the Play Store's list and turns
- * Pro off again. Billing talks to the Play Store app over IPC, so it works without the Internet permission.
+ * the foreground; a refunded purchase disappears from the Play Store's list and turns Pro off again.
+ * Billing talks to the Play Store app over IPC, so it works without the Internet permission.
  *
  * Debug builds can unlock Pro locally, so the features can be tried without a Play Console setup.
  */
@@ -55,10 +66,18 @@ class ProManager(context: Context, scope: CoroutineScope) : PurchasesUpdatedList
     val isPro: StateFlow<Boolean> = combine(entitled, debugUnlocked) { real, debug -> real || debug }
         .stateIn(scope, SharingStarted.Eagerly, entitled.value || debugUnlocked.value)
 
-    private val _offers = MutableStateFlow<List<ProOffer>>(emptyList())
+    private val _offer = MutableStateFlow<ProOffer?>(null)
 
-    /** Plans the Play Store offers this user; empty until loaded or when billing is unavailable. */
-    val offers: StateFlow<List<ProOffer>> = _offers.asStateFlow()
+    /** The price the Play Store offers this user; null until loaded or when billing is unavailable. */
+    val offer: StateFlow<ProOffer?> = _offer.asStateFlow()
+
+    private val _status = MutableStateFlow(ProStoreStatus.Loading)
+    val status: StateFlow<ProStoreStatus> = _status.asStateFlow()
+
+    private val _pending = MutableStateFlow(false)
+
+    /** A purchase was made but the payment isn't confirmed yet (e.g. cash at a store). */
+    val pending: StateFlow<Boolean> = _pending.asStateFlow()
 
     /** Whether Pro is unlocked for testing only (debug builds). */
     val debugUnlock: StateFlow<Boolean> = debugUnlocked.asStateFlow()
@@ -71,18 +90,22 @@ class ProManager(context: Context, scope: CoroutineScope) : PurchasesUpdatedList
             .build()
     }
 
-    /** Re-reads the subscription and the plans from the Play Store. Safe to call often. */
+    /** Re-reads the purchase and the price from the Play Store. Safe to call often; also restores a purchase. */
     fun refresh() {
         if (client.isReady) {
             queryPurchases()
-            queryOffers()
+            queryOffer()
             return
         }
+        if (_status.value != ProStoreStatus.Ready) _status.value = ProStoreStatus.Loading
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     queryPurchases()
-                    queryOffers()
+                    queryOffer()
+                } else {
+                    Log.w(TAG, "Billing setup failed: ${result.responseCode} ${result.debugMessage}")
+                    _status.value = ProStoreStatus.BillingUnavailable
                 }
             }
 
@@ -94,23 +117,12 @@ class ProManager(context: Context, scope: CoroutineScope) : PurchasesUpdatedList
     /** Opens the Play Store purchase sheet for [offer]. */
     fun purchase(activity: Activity, offer: ProOffer) {
         val details = productDetails.value ?: return refresh()
+        val productParams = BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(details)
+        offer.offerToken?.let(productParams::setOfferToken)
         val params = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(
-                listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                        .setProductDetails(details)
-                        .setOfferToken(offer.offerToken)
-                        .build(),
-                ),
-            )
+            .setProductDetailsParamsList(listOf(productParams.build()))
             .build()
         client.launchBillingFlow(activity, params)
-    }
-
-    /** Opens the Play Store page where the user can change or cancel the subscription. */
-    fun manageSubscription(context: Context) {
-        val uri = Uri.parse("https://play.google.com/store/account/subscriptions?sku=$PRODUCT_ID&package=${app.packageName}")
-        context.startActivity(Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     fun setDebugUnlock(unlocked: Boolean) {
@@ -120,30 +132,35 @@ class ProManager(context: Context, scope: CoroutineScope) : PurchasesUpdatedList
     }
 
     override fun onPurchasesUpdated(result: BillingResult, purchases: List<Purchase>?) {
-        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            handlePurchases(purchases)
+        when (result.responseCode) {
+            BillingClient.BillingResponseCode.OK -> purchases?.let { handlePurchases(it) }
+            // Bought earlier (e.g. on another device or before a reinstall): read it back.
+            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> queryPurchases()
+            else -> Unit
         }
     }
 
     private fun queryPurchases() {
-        val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
+        val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build()
         client.queryPurchasesAsync(params) { result, purchases ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) handlePurchases(purchases, authoritative = true)
         }
     }
 
     /**
-     * Grants Pro for every active purchase and acknowledges new ones (Play refunds purchases that are not
-     * acknowledged within three days). With [authoritative] the list is the complete set of active
-     * subscriptions, so an empty list revokes Pro.
+     * Grants Pro for a completed purchase and acknowledges new ones (Play refunds purchases that are not
+     * acknowledged within three days). With [authoritative] the list is the complete set of owned
+     * products, so an empty list revokes Pro.
      */
     private fun handlePurchases(purchases: List<Purchase>, authoritative: Boolean = false) {
-        val active = purchases.filter { PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED }
+        val ours = purchases.filter { PRODUCT_ID in it.products }
+        val active = ours.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }
         active.filterNot { it.isAcknowledged }.forEach { purchase ->
             val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
             client.acknowledgePurchase(params) { }
         }
         if (active.isNotEmpty() || authoritative) setEntitled(active.isNotEmpty())
+        if (ours.isNotEmpty() || authoritative) _pending.value = ours.any { it.purchaseState == Purchase.PurchaseState.PENDING }
     }
 
     private fun setEntitled(value: Boolean) {
@@ -151,44 +168,44 @@ class ProManager(context: Context, scope: CoroutineScope) : PurchasesUpdatedList
         entitled.value = value
     }
 
-    private fun queryOffers() {
+    private fun queryOffer() {
         val product = QueryProductDetailsParams.Product.newBuilder()
             .setProductId(PRODUCT_ID)
-            .setProductType(BillingClient.ProductType.SUBS)
+            .setProductType(BillingClient.ProductType.INAPP)
             .build()
         val params = QueryProductDetailsParams.newBuilder().setProductList(listOf(product)).build()
         client.queryProductDetailsAsync(params) { result, details ->
-            if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
-            val subscription = details.productDetailsList.firstOrNull { it.productId == PRODUCT_ID }
-            productDetails.value = subscription
-            _offers.value = subscription?.toOffers().orEmpty()
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+                Log.w(TAG, "Product query failed: ${result.responseCode} ${result.debugMessage}")
+                _status.value = ProStoreStatus.BillingUnavailable
+                return@queryProductDetailsAsync
+            }
+            val found = details.productDetailsList.firstOrNull { it.productId == PRODUCT_ID }
+            val offer = found?.toOffer()
+            if (offer == null) {
+                Log.w(TAG, "Product $PRODUCT_ID not found; unfetched: ${details.unfetchedProductList}")
+            }
+            productDetails.value = found
+            _offer.value = offer
+            _status.value = if (offer == null) ProStoreStatus.ProductNotFound else ProStoreStatus.Ready
         }
     }
 
     /**
-     * One offer per base plan (e.g. monthly and yearly). Developer offers such as a free trial are only
-     * returned when the user is eligible, so they are preferred over the plain base plan.
+     * The cheapest purchase option. Discounted offers are only returned when the user is eligible, so the
+     * lowest price is the one this user can actually get.
      */
-    private fun ProductDetails.toOffers(): List<ProOffer> =
-        subscriptionOfferDetails.orEmpty()
-            .groupBy { it.basePlanId }
-            .mapNotNull { (basePlanId, offers) ->
-                val offer = offers.firstOrNull { it.offerId != null } ?: offers.first()
-                val recurring = offer.pricingPhases.pricingPhaseList.lastOrNull() ?: return@mapNotNull null
-                ProOffer(basePlanId, recurring.formattedPrice, recurring.billingPeriod, offer.offerToken)
-            }
-            .sortedBy { periodSortKey(it.billingPeriod) }
-
-    private fun periodSortKey(period: String): Int = when (period.lastOrNull()) {
-        'W' -> 0
-        'M' -> 1
-        'Y' -> 2
-        else -> 3
+    private fun ProductDetails.toOffer(): ProOffer? {
+        val options = oneTimePurchaseOfferDetailsList ?: listOfNotNull(oneTimePurchaseOfferDetails)
+        val best = options.minByOrNull { it.priceAmountMicros } ?: return null
+        return ProOffer(best.formattedPrice, best.offerToken)
     }
 
     companion object {
-        /** Subscription product id; create it with monthly and/or yearly base plans in the Play Console. */
+        /** One-time product id, created in the Play Console under Monetize › Products › One-time products. */
         const val PRODUCT_ID = "clockshift_pro"
+
+        private const val TAG = "ProManager"
 
         private const val PREFS = "pro"
         private const val KEY_ENTITLED = "entitled"

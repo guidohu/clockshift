@@ -52,6 +52,7 @@ import com.github.guidohu.clockshift.ui.components.DateRangeDialog
 import com.github.guidohu.clockshift.ui.components.RangeKind
 import com.github.guidohu.clockshift.ui.components.resolveRange
 import com.github.guidohu.clockshift.ui.export.ExportSheet
+import com.github.guidohu.clockshift.ui.pro.LocalPro
 import com.github.guidohu.clockshift.ui.theme.overtime
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -75,6 +76,7 @@ fun OverviewScreen(state: AppState) {
     var pickerOpen by rememberSaveable { mutableStateOf(false) }
     var selectedBar by rememberSaveable { mutableStateOf<Int?>(null) }
     var exportOpen by rememberSaveable { mutableStateOf(false) }
+    val pro = LocalPro.current
 
     val range = resolveRange(kind, today, LocalDate.ofEpochDay(customFrom), LocalDate.ofEpochDay(customTo), firstDayOfWeek)
     val stats = remember(state, range, today) {
@@ -87,7 +89,7 @@ fun OverviewScreen(state: AppState) {
             TopAppBar(
                 title = { Text(stringResource(R.string.nav_overview)) },
                 actions = {
-                    IconButton(onClick = { exportOpen = true }) {
+                    IconButton(onClick = { if (pro.isPro) exportOpen = true else pro.showUpgrade() }) {
                         Icon(Icons.Outlined.IosShare, contentDescription = stringResource(R.string.cd_export))
                     }
                 },

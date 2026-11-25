@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.github.guidohu.clockshift.ui.AppRoot
 import com.github.guidohu.clockshift.ui.MainViewModel
 import com.github.guidohu.clockshift.ui.pro.LocalPro
+import com.github.guidohu.clockshift.ui.pro.ProUpgradeDialog
 import com.github.guidohu.clockshift.ui.pro.ProAccess
 import com.github.guidohu.clockshift.ui.theme.ClockShiftTheme
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,9 @@ class MainActivity : ComponentActivity() {
     /** Epoch day requested by a notification tap; consumed once the navigation happened. */
     private var openDayRequest by mutableStateOf<Long?>(null)
 
+    /** Whether the "Enable Pro features?" dialog is showing; opened by tapping a locked feature. */
+    private var proPromptOpen by mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -44,6 +48,7 @@ class MainActivity : ComponentActivity() {
                         openDayRequest = openDayRequest,
                         onOpenDayHandled = { openDayRequest = null },
                     )
+                    if (proPromptOpen) ProUpgradeDialog(onDismiss = { proPromptOpen = false })
                 }
             }
         }
@@ -51,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // The subscription may have changed in the Play Store, and location permissions or services in system settings.
+        // The purchase may have changed in the Play Store, and location permissions or services in system settings.
         container.pro.refresh()
         lifecycleScope.launch(Dispatchers.Default) { container.autoTracker.sync() }
     }
@@ -60,17 +65,22 @@ class MainActivity : ComponentActivity() {
     private fun rememberProAccess(): ProAccess {
         val pro = container.pro
         val isPro by pro.isPro.collectAsStateWithLifecycle()
-        val offers by pro.offers.collectAsStateWithLifecycle()
+        val offer by pro.offer.collectAsStateWithLifecycle()
+        val status by pro.status.collectAsStateWithLifecycle()
+        val pending by pro.pending.collectAsStateWithLifecycle()
         val debugUnlocked by pro.debugUnlock.collectAsStateWithLifecycle()
-        return remember(isPro, offers, debugUnlocked) {
+        return remember(isPro, offer, status, pending, debugUnlocked) {
             ProAccess(
                 isPro = isPro,
-                offers = offers,
+                offer = offer,
+                status = status,
+                pending = pending,
                 debugUnlockAvailable = BuildConfig.DEBUG,
                 debugUnlocked = debugUnlocked,
                 purchase = pro::purchase,
-                manage = pro::manageSubscription,
+                refresh = pro::refresh,
                 setDebugUnlock = pro::setDebugUnlock,
+                showUpgrade = { proPromptOpen = true },
             )
         }
     }

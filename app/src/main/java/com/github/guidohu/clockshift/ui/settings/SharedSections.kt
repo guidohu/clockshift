@@ -1,5 +1,6 @@
 package com.github.guidohu.clockshift.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,6 +44,7 @@ import com.github.guidohu.clockshift.ui.components.DatePickerDialogFor
 import com.github.guidohu.clockshift.ui.components.NotificationPermission
 import com.github.guidohu.clockshift.ui.components.TimeField
 import com.github.guidohu.clockshift.ui.components.ValueField
+import com.github.guidohu.clockshift.ui.pro.LOCKED_ALPHA
 import com.github.guidohu.clockshift.ui.pro.LocalPro
 import com.github.guidohu.clockshift.ui.pro.ProBadge
 import java.time.LocalDate
@@ -168,7 +171,10 @@ fun BalanceDialog(initialMinutes: Int, onConfirm: (Int) -> Unit, onDismiss: () -
     )
 }
 
-/** A title and summary with a switch; the whole row toggles. */
+/**
+ * A title and summary with a switch; the whole row toggles. A [locked] row is a Pro feature without Pro:
+ * faded, off, marked PRO, and tapping it offers Pro instead of toggling.
+ */
 @Composable
 fun SwitchRow(
     title: String,
@@ -177,13 +183,20 @@ fun SwitchRow(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    locked: Boolean = false,
     trailing: @Composable () -> Unit = {},
 ) {
+    val showUpgrade = LocalPro.current.showUpgrade
+    val interaction = if (locked) {
+        Modifier.clickable(role = Role.Button, onClick = showUpgrade)
+    } else {
+        Modifier.toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange)
+    }
     Row(
         modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
-            .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
+            .then(interaction),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
@@ -192,16 +205,24 @@ fun SwitchRow(
                     title,
                     style = MaterialTheme.typography.bodyLarge,
                     color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.alpha(if (locked) LOCKED_ALPHA else 1f),
                 )
+                if (locked) ProBadge()
                 trailing()
             }
             Text(
                 summary,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.alpha(if (locked) LOCKED_ALPHA else 1f),
             )
         }
-        Switch(checked = checked, onCheckedChange = null, enabled = enabled, modifier = Modifier.padding(start = 16.dp))
+        Switch(
+            checked = checked && !locked,
+            onCheckedChange = null,
+            enabled = enabled && !locked,
+            modifier = Modifier.padding(start = 16.dp),
+        )
     }
 }
 
@@ -274,10 +295,9 @@ fun ProRemindersSection(
         SwitchRow(
             title = stringResource(R.string.work_done_switch),
             summary = stringResource(R.string.work_done_summary),
-            checked = isPro && reminders.checkOut,
-            enabled = isPro,
+            checked = reminders.checkOut,
+            locked = !isPro,
             onCheckedChange = { onRemindersChange(reminders.copy(checkOut = it)) },
-            trailing = { if (!isPro) ProBadge() },
         )
         if (isPro && reminders.checkOut) {
             DurationField(
