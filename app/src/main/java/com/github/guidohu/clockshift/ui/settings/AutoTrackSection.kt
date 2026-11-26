@@ -73,7 +73,8 @@ fun AutoTrackSection(
             modes.forEachIndexed { index, (mode, label) ->
                 SegmentedButton(
                     selected = settings.mode == mode,
-                    // No permission prompt here: Play requires the explanation (the notice below) to come first.
+                    // No permission prompt here: every request goes through LocationPermission, which shows
+                    // the prominent location disclosure Google Play requires right before the system dialog.
                     onClick = { onChange(settings.copy(mode = mode)) },
                     shape = SegmentedButtonDefaults.itemShape(index, modes.size),
                 ) { Text(stringResource(label)) }

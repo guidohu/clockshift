@@ -8,6 +8,16 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
@@ -15,8 +25,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
+import com.github.guidohu.clockshift.R
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.github.guidohu.clockshift.autotrack.LocationAccess
@@ -88,21 +103,37 @@ class LocationPermission internal constructor(private val context: Context) {
     internal var backgroundLauncher: (() -> Unit)? = null
     internal var afterForeground: (() -> Unit)? = null
 
+    /**
+     * The permission request waiting for the user to read the location disclosure. Google Play requires a
+     * prominent in-app disclosure that immediately precedes every runtime location prompt, so nothing below
+     * launches a system dialog directly; it is queued here and runs only when the user taps Continue.
+     */
+    internal var pendingRequest by mutableStateOf<(() -> Unit)?>(null)
+
     internal fun refresh() {
         foreground = LocationAccess.hasForeground(context)
         background = LocationAccess.hasBackground(context)
         locationEnabled = LocationAccess.isLocationEnabled(context)
     }
 
-    /** Asks for location while in use, then runs [then] if it was granted. */
+    /** Asks for location while in use (after the disclosure), then runs [then] if it was granted. */
     fun requestForeground(then: () -> Unit = {}) {
         if (foreground) return then()
+        pendingRequest = { launchForeground(then) }
+    }
+
+    /** Asks for everything automatic check-in needs (after the disclosure), one system dialog after the other. */
+    fun requestAll() {
+        if (background) return
+        pendingRequest = { if (foreground) launchBackground() else launchForeground(::launchBackground) }
+    }
+
+    private fun launchForeground(then: () -> Unit) {
         afterForeground = then
         foregroundLauncher?.invoke() ?: openAppSettings()
     }
 
-    /** Asks for everything automatic check-in needs, one system dialog after the other. */
-    fun requestAll() = requestForeground {
+    private fun launchBackground() {
         if (!background) backgroundLauncher?.invoke() ?: openAppSettings()
     }
 
@@ -142,5 +173,35 @@ fun rememberLocationPermission(): LocationPermission {
         }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { permission.refresh() }
+    permission.pendingRequest?.let { request ->
+        LocationDisclosureDialog(
+            onContinue = {
+                permission.pendingRequest = null
+                request()
+            },
+            onDismiss = { permission.pendingRequest = null },
+        )
+    }
     return permission
+}
+
+/** Prominent disclosure shown right before Android's location permission dialogs (Google Play User Data policy). */
+@Composable
+private fun LocationDisclosureDialog(onContinue: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { Icon(Icons.Filled.LocationOn, contentDescription = null) },
+        title = { Text(stringResource(R.string.location_disclosure_title)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.location_disclosure_summary), fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.location_disclosure_wifi))
+                Text(stringResource(R.string.location_disclosure_location))
+                Text(stringResource(R.string.location_disclosure_privacy))
+                Text(stringResource(R.string.location_disclosure_next))
+            }
+        },
+        confirmButton = { TextButton(onClick = onContinue) { Text(stringResource(R.string.location_disclosure_continue)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.location_disclosure_decline)) } },
+    )
 }

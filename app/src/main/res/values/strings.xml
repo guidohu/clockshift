@@ -164,7 +164,15 @@
     <string name="auto_location_failed">Couldn’t find your location. Make sure location is on and try again.</string>
     <string name="auto_location_radius">Radius %1$d m</string>
     <string name="auto_no_play_services">Location-based check-in needs Google Play services, which this device doesn’t have. Office Wi‑Fi works without it.</string>
-    <string name="auto_permission_needed">To notice when you arrive or leave while ClockShift is closed, allow location access “all the time”. Android needs it to show the Wi‑Fi name and for the workplace area. Your location never leaves this phone.</string>
+    <string name="auto_permission_needed">Automatic check-in uses your location, also while ClockShift is closed, to notice when you arrive at and leave work. It needs location access set to “Allow all the time” to function properly. Your location data stays on this phone and is never shared with anyone.</string>
+    <string name="location_disclosure_title">ClockShift uses your location</string>
+    <string name="location_disclosure_summary">ClockShift collects location data to enable automatic check-in when you arrive at work and check-out when you leave, even when the app is closed or not in use.</string>
+    <string name="location_disclosure_wifi">With Office Wi‑Fi, location access lets ClockShift read the name of the Wi‑Fi network your phone is connected to. Android only shows network names to apps that have location access.</string>
+    <string name="location_disclosure_location">With Location, ClockShift uses your phone’s location to set your workplace and to notice when you enter or leave the area around it.</string>
+    <string name="location_disclosure_privacy">Your location data is used only for automatic check-in and check-out. It stays on this phone, is not used for ads and is never sent to the developer or anyone else. You can turn automatic check-in off at any time in Settings.</string>
+    <string name="location_disclosure_next">Next, Android asks for your permission. To have this work while ClockShift is closed, choose “Allow all the time” when Android offers it.</string>
+    <string name="location_disclosure_continue">Continue</string>
+    <string name="location_disclosure_decline">No thanks</string>
     <string name="auto_permission_allow">Allow location</string>
     <string name="auto_permission_settings">App settings</string>
     <string name="auto_location_off">Location is turned off, so ClockShift can’t tell when you arrive or leave.</string>
